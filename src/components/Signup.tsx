@@ -1,8 +1,10 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { signupFields } from "../constants/formFields";
 import FormAction from "./FormAction";
 import Input from "./Input";
-
+import apiInstance from "../axios";
+import SuccessSnackbar from "./SuccessResponseSnackbar";
+import FailureSnackbar from "./FailureResponseSnackbar";
 const fields = signupFields;
 let fieldsState: { [key: string]: string } = {};
 fields.forEach((field) => (fieldsState[field.id] = ""));
@@ -10,19 +12,39 @@ fields.forEach((field) => (fieldsState[field.id] = ""));
 const Signup = () => {
   const [signupState, setSignupState] = useState(fieldsState);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: { target: { id: any; value: any } }) => {
     setSignupState({ ...signupState, [e.target.id]: e.target.value });
   };
-
+  const [response, setResponse] = useState("");
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     console.log(signupState);
     createAccount();
   };
-
-  // Handle Signup API Integration here
-  const createAccount = () => {
-    // API integration logic
+  console.log(signupState);
+  const signUpReqData = {
+    name: signupState.username,
+    email: signupState.email,
+    password: signupState.password,
+    address: signupState.address,
+  };
+  console.log("SignUpReqData:", signUpReqData);
+  const createAccount = async () => {
+    try {
+      console.log("called");
+      const response = await apiInstance.post("/auth/signup", signUpReqData);
+      setResponse(response.data);
+      setIsSuccess(true);
+    } catch (error: any) {
+      const errorMessage = error.response?.data || "Something went wrong";
+      setResponse(errorMessage);
+      setIsSuccess(false);
+      console.log(error);
+    } finally {
+      setShowSnackbar(true);
+    }
   };
 
   return (
@@ -43,6 +65,18 @@ const Signup = () => {
             customClass=" "
           />
         ))}
+        {showSnackbar && isSuccess && (
+          <SuccessSnackbar
+            message={response}
+            onClose={() => setShowSnackbar(false)}
+          />
+        )}
+        {showSnackbar && !isSuccess && (
+          <FailureSnackbar
+            message={response}
+            onClose={() => setShowSnackbar(false)}
+          />
+        )}
         <FormAction handleSubmit={handleSubmit} text="Signup" />
       </div>
     </form>

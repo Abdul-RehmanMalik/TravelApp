@@ -1,12 +1,12 @@
 import { useState, FormEvent } from "react";
-import { forgotPasswordFields } from "../constants/formFields";
+import { resetPasswordFields } from "../constants/formFields";
 import Input from "./Input";
 import FormAction from "./FormAction";
-const fields = forgotPasswordFields;
+const fields = resetPasswordFields;
 let fieldsState: { [key: string]: string } = {};
 fields.forEach((field) => (fieldsState[field.id] = ""));
 
-const Forgotpassword = () => {
+const Resetpassword = () => {
   const [passwordState, setPasswordState] = useState(fieldsState);
 
   const handleChange = (e: { target: { id: any; value: any } }) => {
@@ -39,9 +39,9 @@ const Forgotpassword = () => {
           />
         ))}
       </div>
-      <FormAction handleSubmit={handleSubmit} text="Send" />
+      <FormAction handleSubmit={handleSubmit} text="Change Password" />
     </form>
   );
 };
 
-export default Forgotpassword;
+export default Resetpassword;
