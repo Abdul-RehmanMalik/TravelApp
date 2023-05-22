@@ -1,16 +1,16 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent } from 'react'
 
 interface InputProps {
-  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  value: string;
-  labelText: string;
-  labelFor: string;
-  id: string;
-  name: string;
-  type: string;
-  isRequired: boolean;
-  placeholder: string;
-  customClass: string;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void
+  value: string
+  labelText: string
+  labelFor: string
+  id: string
+  name: string
+  type: string
+  isRequired: boolean
+  placeholder: string
+  customClass: string
 }
 
 const Input = ({
@@ -23,10 +23,10 @@ const Input = ({
   type,
   isRequired = false,
   placeholder,
-  customClass,
+  customClass
 }: InputProps) => {
   const fixedInputClass =
-    "border border-gray-300 rounded-md p-2 focus:outline-none focus:border-green-500";
+    'border border-bordercolor rounded-md p-2 focus:outline-none focus:border-primary'
 
   return (
     <div className="my-5">
@@ -44,7 +44,7 @@ const Input = ({
         placeholder={placeholder}
       />
     </div>
-  );
-};
+  )
+}
 
-export default Input;
+export default Input

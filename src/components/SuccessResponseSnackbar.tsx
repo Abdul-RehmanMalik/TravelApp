@@ -1,6 +1,6 @@
 interface SnackbarProps {
-  message: string;
-  onClose: () => void;
+  message: string
+  onClose: () => void
 }
 export default function SuccessSnackbar({ message, onClose }: SnackbarProps) {
   return (
@@ -10,7 +10,7 @@ export default function SuccessSnackbar({ message, onClose }: SnackbarProps) {
           <div className="inline-flex items-center">
             <svg
               aria-hidden="true"
-              className="w-5 h-5 mr-2 text-green-500"
+              className="w-5 h-5 mr-2 text-primary"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -45,5 +45,5 @@ export default function SuccessSnackbar({ message, onClose }: SnackbarProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

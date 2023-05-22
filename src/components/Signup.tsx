@@ -30,7 +30,7 @@ const Signup = () => {
     password: signupState.password,
     address: signupState.address
   })
-  console.log('SignUpReqData:', getSignUpReqData)
+  console.log('SignUpReqData:', getSignUpReqData())
   const createAccount = async () => {
     try {
       console.log('called')

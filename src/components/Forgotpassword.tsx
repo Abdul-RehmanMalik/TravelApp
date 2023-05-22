@@ -1,24 +1,24 @@
-import { useState, FormEvent } from "react";
-import { forgotPasswordFields } from "../constants/formFields";
-import Input from "./Input";
-import FormAction from "./FormAction";
-const fields = forgotPasswordFields;
-let fieldsState: { [key: string]: string } = {};
-fields.forEach((field) => (fieldsState[field.id] = ""));
+import { useState, FormEvent } from 'react'
+import { forgotPasswordFields } from '../constants/formFields'
+import Input from './Input'
+import FormAction from './FormAction'
+const fields = forgotPasswordFields
+let fieldsState: { [key: string]: string } = {}
+fields.forEach((field) => (fieldsState[field.id] = ''))
 
 const Forgotpassword = () => {
-  const [passwordState, setPasswordState] = useState(fieldsState);
+  const [passwordState, setPasswordState] = useState(fieldsState)
 
   const handleChange = (e: { target: { id: any; value: any } }) => {
-    setPasswordState({ ...passwordState, [e.target.id]: e.target.value });
-  };
+    setPasswordState({ ...passwordState, [e.target.id]: e.target.value })
+  }
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    authenticateUser();
-  };
+    e.preventDefault()
+    authenticateUser()
+  }
 
-  const authenticateUser = () => {};
+  const authenticateUser = () => {}
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -41,7 +41,7 @@ const Forgotpassword = () => {
       </div>
       <FormAction handleSubmit={handleSubmit} text="Send" />
     </form>
-  );
-};
+  )
+}
 
-export default Forgotpassword;
+export default Forgotpassword

@@ -1,6 +1,6 @@
 interface SnackbarProps {
-  message: string;
-  onClose: () => void;
+  message: string
+  onClose: () => void
 }
 export default function FailureSnackbar({ message, onClose }: SnackbarProps) {
   return (
@@ -45,5 +45,5 @@ export default function FailureSnackbar({ message, onClose }: SnackbarProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
