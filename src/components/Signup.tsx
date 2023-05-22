@@ -1,51 +1,54 @@
-import { useState, FormEvent } from "react";
-import { signupFields } from "../constants/formFields";
-import FormAction from "./FormAction";
-import Input from "./Input";
-import apiInstance from "../axios";
-import SuccessSnackbar from "./SuccessResponseSnackbar";
-import FailureSnackbar from "./FailureResponseSnackbar";
-const fields = signupFields;
-let fieldsState: { [key: string]: string } = {};
-fields.forEach((field) => (fieldsState[field.id] = ""));
+import { useState, FormEvent } from 'react'
+import { signupFields } from '../constants/formFields'
+import FormAction from './FormAction'
+import Input from './Input'
+import apiInstance from '../axios'
+import SuccessSnackbar from './SuccessResponseSnackbar'
+import FailureSnackbar from './FailureResponseSnackbar'
+const fields = signupFields
+let fieldsState: { [key: string]: string } = {}
+fields.forEach((field) => (fieldsState[field.id] = ''))
 
 const Signup = () => {
-  const [signupState, setSignupState] = useState(fieldsState);
+  const [signupState, setSignupState] = useState(fieldsState)
 
   const handleChange = (e: { target: { id: any; value: any } }) => {
-    setSignupState({ ...signupState, [e.target.id]: e.target.value });
-  };
-  const [response, setResponse] = useState("");
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+    setSignupState({ ...signupState, [e.target.id]: e.target.value })
+  }
+  const [response, setResponse] = useState('')
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    console.log(signupState);
-    createAccount();
-  };
-  console.log(signupState);
-  const signUpReqData = {
+    e.preventDefault()
+    console.log(signupState)
+    createAccount()
+  }
+  console.log(signupState)
+  const getSignUpReqData = () => ({
     name: signupState.username,
     email: signupState.email,
     password: signupState.password,
-    address: signupState.address,
-  };
-  console.log("SignUpReqData:", signUpReqData);
+    address: signupState.address
+  })
+  console.log('SignUpReqData:', getSignUpReqData)
   const createAccount = async () => {
     try {
-      console.log("called");
-      const response = await apiInstance.post("/auth/signup", signUpReqData);
-      setResponse(response.data);
-      setIsSuccess(true);
+      console.log('called')
+      const response = await apiInstance.post(
+        '/auth/signup',
+        getSignUpReqData()
+      )
+      setResponse(response.data)
+      setIsSuccess(true)
     } catch (error: any) {
-      const errorMessage = error.response?.data || "Something went wrong";
-      setResponse(errorMessage);
-      setIsSuccess(false);
-      console.log(error);
+      const errorMessage = error.response?.data || 'Something went wrong'
+      setResponse(errorMessage)
+      setIsSuccess(false)
+      console.log(error)
     } finally {
-      setShowSnackbar(true);
+      setShowSnackbar(true)
     }
-  };
+  }
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -80,7 +83,7 @@ const Signup = () => {
         <FormAction handleSubmit={handleSubmit} text="Signup" />
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default Signup;
+export default Signup

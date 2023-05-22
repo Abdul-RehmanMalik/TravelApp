@@ -1,9 +1,9 @@
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import SignUpPage from "./pages/Signup";
-import LoginPage from "./pages/Login";
-import ForgotPasswordPage from "./pages/ForgotPassword";
-import ResetPasswordPage from "./pages/ResetPassword";
+import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import SignUpPage from './pages/Signup'
+import LoginPage from './pages/Login'
+import ForgotPasswordPage from './pages/ForgotPassword'
+import ResetPasswordPage from './pages/ResetPassword'
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
         </BrowserRouter>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
