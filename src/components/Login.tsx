@@ -1,29 +1,51 @@
-import { useState, ChangeEvent, FormEvent } from "react";
-import { loginFields } from "../constants/formFields";
-import Input from "./Input";
-import FormAction from "./FormAction";
-import FormExtra from "./FormExtra";
-
-const fields = loginFields;
-let fieldsState: { [key: string]: string } = {};
-fields.forEach((field) => (fieldsState[field.id] = ""));
+import { useState, FormEvent } from 'react'
+import { loginFields } from '../constants/formFields'
+import Input from './Input'
+import FormAction from './FormAction'
+import FormExtra from './FormExtra'
+import apiInstance from '../axios'
+import SuccessSnackbar from './SuccessResponseSnackbar'
+import FailureSnackbar from './FailureResponseSnackbar'
+const fields = loginFields
+let fieldsState: { [key: string]: string } = {}
+fields.forEach((field) => (fieldsState[field.id] = ''))
 
 const Login = () => {
-  const [loginState, setLoginState] = useState(fieldsState);
+  const [loginState, setLoginState] = useState(fieldsState)
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLoginState({ ...loginState, [e.target.id]: e.target.value });
-  };
-
+  const handleChange = (e: { target: { id: any; value: any } }) => {
+    setLoginState({ ...loginState, [e.target.id]: e.target.value })
+  }
+  const [response, setResponse] = useState('')
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    authenticateUser();
-  };
+    e.preventDefault()
+    authenticateUser()
+  }
 
-  // Handle Login API Integration here
-  const authenticateUser = () => {
-    // API integration logic
-  };
+  //console.log(loginState);
+
+  const getLoginReqData = () => ({
+    email: loginState.email,
+    password: loginState.password
+  })
+  console.log(getLoginReqData())
+  const authenticateUser = async () => {
+    try {
+      //console.log("called");
+      const response = await apiInstance.post('/auth/login', getLoginReqData())
+      setResponse(response.data)
+      setIsSuccess(true)
+    } catch (error: any) {
+      const errorMessage = error.response?.data || 'Something went wrong'
+      setResponse(errorMessage)
+      setIsSuccess(false)
+      console.log(error)
+    } finally {
+      setShowSnackbar(true)
+    }
+  }
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -45,10 +67,22 @@ const Login = () => {
         ))}
       </div>
 
+      {showSnackbar && isSuccess && (
+        <SuccessSnackbar
+          message={response}
+          onClose={() => setShowSnackbar(false)}
+        />
+      )}
+      {showSnackbar && !isSuccess && (
+        <FailureSnackbar
+          message={response}
+          onClose={() => setShowSnackbar(false)}
+        />
+      )}
       <FormExtra />
       <FormAction handleSubmit={handleSubmit} text="Login" />
     </form>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
