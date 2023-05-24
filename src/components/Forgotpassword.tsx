@@ -2,6 +2,9 @@ import { useState, FormEvent } from 'react'
 import { forgotPasswordFields } from '../constants/formFields'
 import Input from './Input'
 import FormAction from './FormAction'
+import apiInstance from '../axios'
+import FailureSnackbar from './FailureResponseSnackbar'
+import SuccessSnackbar from './SuccessResponseSnackbar'
 const fields = forgotPasswordFields
 let fieldsState: { [key: string]: string } = {}
 fields.forEach((field) => (fieldsState[field.id] = ''))
@@ -12,13 +15,37 @@ const Forgotpassword = () => {
   const handleChange = (e: { target: { id: any; value: any } }) => {
     setPasswordState({ ...passwordState, [e.target.id]: e.target.value })
   }
+  const [response, setResponse] = useState('')
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     authenticateUser()
   }
+  const getForgotPasswordReqData = () => ({
+    email: passwordState.email
+  })
+  console.log(getForgotPasswordReqData())
 
-  const authenticateUser = () => {}
+  const authenticateUser = async () => {
+    try {
+      //console.log("called");
+      const response = await apiInstance.post(
+        '/auth/forgotpassword',
+        getForgotPasswordReqData()
+      )
+      setResponse(response.data)
+      setIsSuccess(true)
+    } catch (error: any) {
+      const errorMessage = error.response?.data || 'Something went wrong'
+      setResponse(errorMessage)
+      setIsSuccess(false)
+      console.log(error)
+    } finally {
+      setShowSnackbar(true)
+    }
+  }
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -39,6 +66,18 @@ const Forgotpassword = () => {
           />
         ))}
       </div>
+      {showSnackbar && isSuccess && (
+        <SuccessSnackbar
+          message={response}
+          onClose={() => setShowSnackbar(false)}
+        />
+      )}
+      {showSnackbar && !isSuccess && (
+        <FailureSnackbar
+          message={response}
+          onClose={() => setShowSnackbar(false)}
+        />
+      )}
       <FormAction handleSubmit={handleSubmit} text="Send" />
     </form>
   )
