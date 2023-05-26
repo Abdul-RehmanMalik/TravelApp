@@ -5,6 +5,8 @@ import LoginPage from './pages/Login'
 import ForgotPasswordPage from './pages/ForgotPassword'
 import ResetPasswordPage from './pages/ResetPassword'
 import HomePage from './pages/HomePage'
+import { useContext } from 'react'
+import { AppContext } from './context/appContext'
 
 function App() {
   return (
@@ -23,5 +25,4 @@ function App() {
     </div>
   )
 }
-
 export default App

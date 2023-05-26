@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Navbar = () => {
+export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const toggleDropdown = () => {
@@ -116,5 +116,3 @@ const Navbar = () => {
     </nav>
   )
 }
-
-export default Navbar

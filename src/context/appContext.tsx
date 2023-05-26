@@ -13,6 +13,8 @@ interface AppContextProps {
   checkingSession: boolean
   loggedIn: boolean
   setLoggedIn: Dispatch<SetStateAction<boolean>> | null
+  isActivated: boolean
+  setIsActivated: Dispatch<SetStateAction<boolean>> | null
   userId: number
   setUserId: Dispatch<SetStateAction<number>> | null
   username: string
@@ -22,6 +24,8 @@ interface AppContextProps {
 export const AppContext = createContext<AppContextProps>({
   checkingSession: false,
   loggedIn: false,
+  isActivated: false,
+  setIsActivated: null,
   setLoggedIn: null,
   userId: 0,
   setUserId: null,
@@ -33,10 +37,22 @@ const AppContextProvider = (props: { children: ReactNode }) => {
   const { children } = props
   const [checkingSession, setCheckingSession] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
+  const [isActivated, setIsActivated] = useState(false)
   const [userId, setUserId] = useState(0)
   const [username, setUsername] = useState('')
+  const accessToken = localStorage.getItem('accessToken')
   useEffect(() => {
     setCheckingSession(true)
+    apiInstance.defaults.headers.common[
+      'Authorization'
+    ] = `Bearer ${accessToken}`
+    if (accessToken) {
+      apiInstance.defaults.headers.common[
+        'Authorization'
+      ] = `Bearer ${accessToken}`
+    } else {
+      delete apiInstance.defaults.headers.common['Authorization']
+    }
     apiInstance
       .get('/session')
       .then((res) => res.data)
@@ -45,8 +61,10 @@ const AppContextProvider = (props: { children: ReactNode }) => {
         setUserId(data.id)
         setUsername(data.name)
         setLoggedIn(true)
+        setIsActivated(data.isActivated)
       })
       .catch(() => {
+        console.log('in context catch')
         setLoggedIn(false)
       })
   }, [])
@@ -64,6 +82,8 @@ const AppContextProvider = (props: { children: ReactNode }) => {
         checkingSession,
         loggedIn,
         setLoggedIn,
+        isActivated,
+        setIsActivated,
         userId,
         setUserId,
         username,

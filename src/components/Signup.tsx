@@ -1,17 +1,20 @@
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, useContext } from 'react'
 import { signupFields } from '../constants/formFields'
 import FormAction from './FormAction'
 import Input from './Input'
 import apiInstance from '../axios'
 import SuccessSnackbar from './SuccessResponseSnackbar'
 import FailureSnackbar from './FailureResponseSnackbar'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/appContext'
 const fields = signupFields
 let fieldsState: { [key: string]: string } = {}
 fields.forEach((field) => (fieldsState[field.id] = ''))
 
 const Signup = () => {
   const [signupState, setSignupState] = useState(fieldsState)
-
+  const appContext = useContext(AppContext)
+  const navigate = useNavigate()
   const handleChange = (e: { target: { id: any; value: any } }) => {
     setSignupState({ ...signupState, [e.target.id]: e.target.value })
   }
@@ -39,7 +42,17 @@ const Signup = () => {
         getSignUpReqData()
       )
       setResponse(response.data)
-      setIsSuccess(true)
+      const { id } = response.data
+      const { tokens } = response.data
+      appContext.setUserId?.(id)
+      appContext.setLoggedIn?.(true)
+      localStorage.setItem('accessToken', tokens.accessToken)
+      if (response.data.tokens) {
+        setIsSuccess(true)
+        navigate('/home')
+      } else {
+        setIsSuccess(false)
+      }
     } catch (error: any) {
       const errorMessage = error.response?.data || 'Something went wrong'
       setResponse(errorMessage)
