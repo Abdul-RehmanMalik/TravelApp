@@ -1,12 +1,28 @@
-import { useState } from 'react'
-
+import { useContext, useState } from 'react'
+import apiInstance from '../axios'
+import { AppContext } from '../context/appContext'
+import { useNavigate } from 'react-router-dom'
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-
+  const appContext = useContext(AppContext)
+  const navigate = useNavigate()
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
+  const handleSignOut = async () => {
+    try {
+      // const response = await apiInstance.post('/auth/logout')
+      // console.log(response)
+      if (appContext.logout) {
+        appContext.logout()
+        navigate('/')
+      }
+    } catch (error: any) {
+      console.log('Logout failed:', error)
+    }
 
+    setIsDropdownOpen(false)
+  }
   return (
     <nav className="bg-white shadow-lg w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,6 +119,7 @@ export default function Navbar() {
                       href="#"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                       role="menuitem"
+                      onClick={handleSignOut}
                     >
                       Sign out
                     </a>

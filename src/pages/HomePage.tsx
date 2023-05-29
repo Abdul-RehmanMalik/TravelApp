@@ -10,35 +10,24 @@ export default function HomePage() {
   const appContext = useContext(AppContext)
   const navigate = useNavigate()
 
+  // if (!appContext.loggedIn) {
+  //   return <Navigate to="/" />
+  // }
   const accessToken = localStorage.getItem('accessToken')
   console.log(accessToken)
   console.log(appContext.userId)
   console.log(appContext.loggedIn)
   console.log(appContext.checkingSession)
   console.log(appContext.isActivated)
-  // useEffect(() => {
-  //   const getSession = async () => {
-  //     try {
-  //       const response = await apiInstance.get('/session')
-  //       console.log(response.data)
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  //   getSession()
-  // }, [])
-  if (!appContext.userId) {
-    console.log('user id:', appContext.userId)
-    return <Navigate to="/" />
-  }
-  if (!appContext.loggedIn) {
-    return <Navigate to="/" />
-  }
+
   console.log('user id:', appContext.userId)
 
   return (
     <>
       <Navbar />
+      {appContext.isActivated ? null : (
+        <VerificationPopUp isOpen={true} isVerified={false} />
+      )}
       {/*other components here*/}{' '}
     </>
   )

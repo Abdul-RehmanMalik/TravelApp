@@ -50,29 +50,31 @@ const AppContextProvider = (props: { children: ReactNode }) => {
       apiInstance.defaults.headers.common[
         'Authorization'
       ] = `Bearer ${accessToken}`
-    } else {
-      delete apiInstance.defaults.headers.common['Authorization']
     }
     apiInstance
       .get('/session')
       .then((res) => res.data)
       .then((data: any) => {
         setCheckingSession(false)
-        setUserId(data.id)
-        setUsername(data.name)
+        setUserId(data?.id)
+        setUsername(data?.name)
         setLoggedIn(true)
-        setIsActivated(data.isActivated)
+        setIsActivated(data?.isActivated)
       })
       .catch(() => {
         console.log('in context catch')
         setLoggedIn(false)
+        delete apiInstance.defaults.headers.common['Authorization']
       })
   }, [])
   const logout = useCallback(() => {
     apiInstance.get('/auth/logout').then(() => {
+      console.log('callback called')
       setLoggedIn(false)
       setUsername('')
       setUserId(0)
+      localStorage.removeItem('accessToken')
+      delete apiInstance.defaults.headers.common['Authorization']
     })
   }, [])
 

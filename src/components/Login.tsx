@@ -52,6 +52,9 @@ const Login = () => {
       appContext.setUserId?.(id)
       appContext.setLoggedIn?.(true)
       localStorage.setItem('accessToken', tokens.accessToken)
+      apiInstance.defaults.headers.common[
+        'Authorization'
+      ] = `Bearer ${accessToken}`
       if (response.data.tokens) {
         setIsSuccess(true)
         navigate('/home')

@@ -1,31 +1,53 @@
-import React, { useEffect } from 'react'
-
+import { useLocation } from 'react-router-dom'
+import { useEffect, useContext } from 'react'
+import apiInstance from '../axios'
+import { AppContext } from '../context/appContext'
+import { useNavigate, Navigate } from 'react-router-dom'
 interface PopupProps {
   isOpen: boolean
   isVerified: boolean
 }
 
-const VerificationPopUp = ({ isOpen, isVerified }: PopupProps) => {
+const VerificationPopUp = ({ isVerified }: PopupProps) => {
+  const appContext = useContext(AppContext)
+  const navigate = useNavigate()
+  const location = useLocation()
+  if (appContext.isActivated) {
+    console.log('is Activated:', appContext.isActivated)
+    return <Navigate to="/home" />
+  }
+  const searchParams = new URLSearchParams(location.search)
+  const token = searchParams.get('token')
+  const id = searchParams.get('id')
+
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout | undefined
-
-    if (isVerified) {
-      timeoutId = setTimeout(() => {
-        // No close action needed for automatic closing
-      }, 3)
-    }
-
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId)
+    const authenticateUser = async () => {
+      try {
+        if (token && id) {
+          const response = await apiInstance.post('/auth/activate', {
+            token,
+            id
+          })
+          console.log(response)
+          appContext.setIsActivated?.(true)
+          //navigate('/home')
+        }
+      } catch (error) {
+        console.log(error)
       }
     }
-  }, [isVerified])
 
-  if (!isOpen) {
-    return null // Don't render anything if the popup is closed
-  }
+    authenticateUser()
+  }, [token, id])
 
+  // const authenticateUser = async () => {
+  //   try {
+  //     const response = await apiInstance.post('/auth/activate', { token, id })
+  //     console.log(response)
+  //   } catch (error: any) {
+  //     console.log(error)
+  //   }
+  // }
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
       <div className="bg-white p-4 rounded shadow-lg">
