@@ -51,6 +51,7 @@ const AppContextProvider = (props: { children: ReactNode }) => {
         'Authorization'
       ] = `Bearer ${accessToken}`
     }
+
     apiInstance
       .get('/session')
       .then((res) => res.data)
@@ -68,13 +69,15 @@ const AppContextProvider = (props: { children: ReactNode }) => {
       })
   }, [])
   const logout = useCallback(() => {
-    apiInstance.get('/auth/logout').then(() => {
+    apiInstance.post('/auth/logout').then(() => {
       console.log('callback called')
       setLoggedIn(false)
       setUsername('')
       setUserId(0)
       localStorage.removeItem('accessToken')
       delete apiInstance.defaults.headers.common['Authorization']
+      console.log('userId', userId)
+      console.log('LoggedIn', loggedIn)
     })
   }, [])
 

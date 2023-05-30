@@ -11,8 +11,6 @@ export default function Navbar() {
   }
   const handleSignOut = async () => {
     try {
-      // const response = await apiInstance.post('/auth/logout')
-      // console.log(response)
       if (appContext.logout) {
         appContext.logout()
         navigate('/')

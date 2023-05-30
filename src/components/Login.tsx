@@ -49,8 +49,11 @@ const Login = () => {
       // console.log('id from data:', response.data.id)
       const { tokens } = response.data
       const { id } = response.data
+      const { isActivated } = response.data
+
       appContext.setUserId?.(id)
       appContext.setLoggedIn?.(true)
+      appContext.setIsActivated?.(isActivated)
       localStorage.setItem('accessToken', tokens.accessToken)
       apiInstance.defaults.headers.common[
         'Authorization'

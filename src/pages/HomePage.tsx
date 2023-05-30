@@ -14,11 +14,11 @@ export default function HomePage() {
   //   return <Navigate to="/" />
   // }
   const accessToken = localStorage.getItem('accessToken')
-  console.log(accessToken)
+  //console.log(accessToken)
   console.log(appContext.userId)
-  console.log(appContext.loggedIn)
-  console.log(appContext.checkingSession)
-  console.log(appContext.isActivated)
+  console.log('LoggedIn:', appContext.loggedIn)
+  //console.log(appContext.checkingSession)
+  console.log('isAct:', appContext.isActivated)
 
   console.log('user id:', appContext.userId)
 

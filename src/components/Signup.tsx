@@ -46,6 +46,7 @@ const Signup = () => {
       const { tokens } = response.data
       appContext.setUserId?.(id)
       appContext.setLoggedIn?.(true)
+      appContext.setIsActivated?.(false)
       localStorage.setItem('accessToken', tokens.accessToken)
       if (response.data.tokens) {
         setIsSuccess(true)
