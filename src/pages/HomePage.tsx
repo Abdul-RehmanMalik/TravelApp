@@ -1,15 +1,15 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useState } from 'react'
 import Navbar from '../components/Navbar'
 import VerificationPopUp from '../components/VerificationPopup'
 import { AppContext } from '../context/appContext'
-import { useNavigate, Navigate } from 'react-router-dom'
-import apiInstance from '../axios'
-import { error } from 'console'
-
+import { useNavigate } from 'react-router-dom'
+import PostModal from '../components/PostModal'
 export default function HomePage() {
   const appContext = useContext(AppContext)
-  const navigate = useNavigate()
-
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false)
+  const handleCreatePost = () => {
+    setIsPostModalOpen(true)
+  }
   // if (!appContext.loggedIn) {
   //   return <Navigate to="/" />
   // }
@@ -24,9 +24,15 @@ export default function HomePage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar onCreatePost={handleCreatePost} />
       {appContext.isActivated ? null : (
         <VerificationPopUp isOpen={true} isVerified={false} />
+      )}
+      {isPostModalOpen && (
+        <PostModal
+          isOpen={isPostModalOpen}
+          onClose={() => setIsPostModalOpen(false)}
+        />
       )}
       {/*other components here*/}{' '}
     </>

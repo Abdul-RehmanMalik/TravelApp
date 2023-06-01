@@ -1,9 +1,13 @@
 import { useContext, useState } from 'react'
-import apiInstance from '../axios'
 import { AppContext } from '../context/appContext'
 import { useNavigate } from 'react-router-dom'
 import SearchBar from './SearchBar'
-export default function Navbar() {
+import NavBarDropDownMenu from './NavbarDropDownMenu'
+import CreatePostButton from './CreatePostButton'
+interface NavbarProps {
+  onCreatePost: () => void
+}
+export default function Navbar({ onCreatePost }: NavbarProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const appContext = useContext(AppContext)
   const navigate = useNavigate()
@@ -51,6 +55,9 @@ export default function Navbar() {
             </div>
           </div>
           <div className="flex items-center">
+            <div className="mr-4">
+              <CreatePostButton onCreatePost={onCreatePost} />
+            </div>
             {/* Profile Picture */}
             <div className="relative ml-3">
               <button
@@ -64,39 +71,10 @@ export default function Navbar() {
                 <img className="h-8 w-8 rounded-full" src="" alt="Profile" />
               </button>
               {/* Dropdown Menu */}
-              {isDropdownOpen && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                  <div
-                    className="py-1"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="user-menu"
-                  >
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                      role="menuitem"
-                    >
-                      Profile
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                      role="menuitem"
-                    >
-                      Settings
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                      role="menuitem"
-                      onClick={handleSignOut}
-                    >
-                      Sign out
-                    </a>
-                  </div>
-                </div>
-              )}
+              <NavBarDropDownMenu
+                isOpen={isDropdownOpen}
+                onSignOut={handleSignOut}
+              />
             </div>
           </div>
         </div>
