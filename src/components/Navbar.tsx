@@ -4,16 +4,24 @@ import { useNavigate } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import NavBarDropDownMenu from './NavbarDropDownMenu'
 import CreatePostButton from './CreatePostButton'
+import ProfileModal from './ProfileModal'
 interface NavbarProps {
   onCreatePost: () => void
+  onSettings: () => void
+  onProfile: () => void
 }
-export default function Navbar({ onCreatePost }: NavbarProps) {
+export default function Navbar({
+  onCreatePost,
+  onSettings,
+  onProfile
+}: NavbarProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const appContext = useContext(AppContext)
   const navigate = useNavigate()
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
+
   const handleSignOut = async () => {
     try {
       if (appContext.logout) {
@@ -74,6 +82,8 @@ export default function Navbar({ onCreatePost }: NavbarProps) {
               <NavBarDropDownMenu
                 isOpen={isDropdownOpen}
                 onSignOut={handleSignOut}
+                onSettingsClick={onSettings}
+                onProfileClick={onProfile}
               />
             </div>
           </div>

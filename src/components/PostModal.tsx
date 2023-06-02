@@ -3,13 +3,16 @@ import apiInstance from '../axios'
 import { AppContext } from '../context/appContext'
 import SuccessSnackbar from './SuccessResponseSnackbar'
 import FailureSnackbar from './FailureResponseSnackbar'
+
 interface PostModalProps {
   isOpen: boolean
   onClose: () => void
 }
+
 export default function PostModal({ isOpen, onClose }: PostModalProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [image, setImage] = useState<File | null>(null)
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [response, setResponse] = useState('')
@@ -21,32 +24,48 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
   > = (e) => {
     setDescription(e.target.value)
   }
+
   const handleTitleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setTitle(e.target.value)
   }
-  const handleSubmit = async () => {
-    const postData = {
-      title,
-      description,
-      postedBy: appContext.username
+
+  const handleImageChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0]
+      setImage(file)
     }
+  }
+
+  const handleSubmit = async () => {
+    const postData = new FormData()
+    postData.append('title', title)
+    postData.append('description', description)
+    postData.append('postedBy', appContext.username)
+    if (image) {
+      postData.append('image', image)
+    }
+    console.log('image', postData)
+
     try {
       const response = await apiInstance.post('/posts/createpost', postData)
       console.log('Response:', response.data)
       setResponse(response.data)
       setIsSuccess(true)
-      // setShowSnackbar(true)
+      // setShowSnackbar(true);
     } catch (error: any) {
       console.log(error)
       const errorMessage = error.response?.data || 'Something went wrong'
       setResponse(errorMessage)
       setIsSuccess(false)
     }
+
     // } finally {
-    //   setShowSnackbar(true)
+    //   setShowSnackbar(true);
     // }
+
     setTitle('')
     setDescription('')
+    setImage(null)
     onClose()
   }
 
@@ -94,6 +113,15 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
                       onChange={handleDescriptionChange}
                       className="border border-gray-300 p-2 mt-1 rounded w-full"
                     ></textarea>
+                  </div>
+                  <div className="mb-4">
+                    <label htmlFor="image" className="text-lg "></label>
+                    <input
+                      type="file"
+                      id="image"
+                      onChange={handleImageChange}
+                      className="mt-1"
+                    />
                   </div>
                 </div>
                 {/*footer*/}

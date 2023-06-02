@@ -6,7 +6,8 @@ export default {
       colors: {
         primary: '#34d399',
         secondary: '#fafafa',
-        bordercolor: '##cbd5e1'
+        bordercolor: '##cbd5e1',
+        hovercolor: '#1f7e5b'
       }
     }
   },
