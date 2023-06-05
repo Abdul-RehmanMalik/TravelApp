@@ -5,7 +5,7 @@ import Input from './Input'
 import apiInstance from '../axios'
 import SuccessSnackbar from './SuccessResponseSnackbar'
 import FailureSnackbar from './FailureResponseSnackbar'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/appContext'
 const fields = signupFields
 let fieldsState: { [key: string]: string } = {}

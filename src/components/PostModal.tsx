@@ -12,7 +12,7 @@ interface PostModalProps {
 export default function PostModal({ isOpen, onClose }: PostModalProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [image, setImage] = useState<File | null>(null)
+  const [images, setImages] = useState<File[]>([])
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [response, setResponse] = useState('')
@@ -31,8 +31,8 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
 
   const handleImageChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]
-      setImage(file)
+      const fileList = Array.from(e.target.files)
+      setImages(fileList)
     }
   }
 
@@ -40,11 +40,10 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
     const postData = new FormData()
     postData.append('title', title)
     postData.append('description', description)
-    postData.append('postedBy', appContext.username)
-    if (image) {
-      postData.append('image', image)
-    }
-    console.log('image', postData)
+    postData.append('postedBy', String(appContext.userId))
+    images.forEach((images, index) => {
+      postData.append(`images`, images)
+    })
 
     try {
       const response = await apiInstance.post('/posts/createpost', postData)
@@ -65,7 +64,7 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
 
     setTitle('')
     setDescription('')
-    setImage(null)
+    setImages([])
     onClose()
   }
 
@@ -115,19 +114,22 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
                     ></textarea>
                   </div>
                   <div className="mb-4">
-                    <label htmlFor="image" className="text-lg "></label>
+                    <label htmlFor="image" className="text-lg ">
+                      Images
+                    </label>
                     <input
                       type="file"
                       id="image"
                       onChange={handleImageChange}
                       className="mt-1"
+                      multiple // Added attribute for multiple image upload
                     />
                   </div>
                 </div>
                 {/*footer*/}
                 <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
                   <button
-                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    className="bg-white-600 text-red-600 active:bg-red-600  hover:bg-red-600 hover:text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
                     onClick={onClose}
                   >

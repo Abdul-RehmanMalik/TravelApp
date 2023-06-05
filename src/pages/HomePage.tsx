@@ -5,14 +5,17 @@ import { AppContext } from '../context/appContext'
 import PostModal from '../components/PostModal'
 import ProfileModal from '../components/ProfileModal'
 import SettingsModal from '../components/SettingsModal'
+import Feed from '../components/PostsFeed'
 export default function HomePage() {
   const appContext = useContext(AppContext)
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  // const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const handleProfileModal = () => {
     setIsProfileOpen(true)
+    // setIsDropdownOpen(false)
   }
   const closeProfileModal = () => {
     setIsProfileOpen(false)
@@ -22,6 +25,7 @@ export default function HomePage() {
   }
   const handleSettings = () => {
     setIsSettingsOpen(true)
+    // setIsDropdownOpen(false)
   }
   // if (!appContext.loggedIn) {
   //   return <Navigate to="/" />
@@ -57,6 +61,11 @@ export default function HomePage() {
       )}
       <ProfileModal isOpen={isProfileOpen} onClose={closeProfileModal} />
       <SettingsModal isOpen={isSettingsOpen} onClose={closeSettings} />
+      <div
+        style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}
+      >
+        <Feed />
+      </div>
       {/*other components here*/}{' '}
     </>
   )

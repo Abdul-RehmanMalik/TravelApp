@@ -18,7 +18,7 @@ export default function SearchBar() {
     try {
       const fetchData = async () => {
         console.log('Query:', query)
-        const res = await apiInstance.post(`/user/searchuser`, { query })
+        const res = await apiInstance.post(`/user/search`, { query })
         setData(res.data.users)
         console.log(res.data)
       }
