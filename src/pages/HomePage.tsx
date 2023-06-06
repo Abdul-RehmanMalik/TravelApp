@@ -42,7 +42,7 @@ export default function HomePage() {
   console.log('isAct:', appContext.isActivated)
 
   console.log('user id:', appContext.userId)
-
+  console.log('Profilepic:', appContext.profilePicture)
   return (
     <>
       <Navbar

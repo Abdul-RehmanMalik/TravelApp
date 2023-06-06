@@ -20,22 +20,19 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   }
 
   const handleChangeProfilePictureClick = () => {
-    fileInputRef.current?.click() // Trigger the file input click event
+    fileInputRef.current?.click()
   }
 
   const handleUpdateNameClick = () => {
     setIsDirty(true)
-    // Handle update name button click
   }
 
   const handleUpdateEmailClick = () => {
     setIsDirty(true)
-    // Handle update email button click
   }
 
   const handleUpdateAddressClick = () => {
     setIsDirty(true)
-    // Handle update address button click
   }
   const handleSaveClick = async () => {
     try {
@@ -80,7 +77,7 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             src={
               selectedProfilePicture
                 ? URL.createObjectURL(selectedProfilePicture)
-                : ''
+                : appContext.profilePicture
             }
             className="flex-shrink-0 object-cover object-center btn- flex w-16 h-16 mr-auto -mb-8 ml-auto rounded-full shadow-xl"
             alt="Profile"

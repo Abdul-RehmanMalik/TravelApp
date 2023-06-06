@@ -13,7 +13,7 @@ interface NavbarProps {
 export default function Navbar({
   onCreatePost,
   onSettings,
-  onProfile
+  onProfile,
 }: NavbarProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const appContext = useContext(AppContext)
@@ -76,7 +76,11 @@ export default function Navbar({
                 aria-expanded="false"
                 aria-haspopup="true"
               >
-                <img className="h-8 w-8 rounded-full" src="" alt="Profile" />
+                <img
+                  className="h-8 w-8 rounded-full"
+                  src={appContext.profilePicture}
+                  alt="Profile"
+                />
               </button>
               {/* Dropdown Menu */}
               <NavBarDropDownMenu

@@ -40,9 +40,12 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
     const postData = new FormData()
     postData.append('title', title)
     postData.append('description', description)
-    postData.append('postedBy', String(appContext.userId))
-    images.forEach((images, index) => {
-      postData.append(`images`, images)
+    postData.append('postedBy[userId]', String(appContext.userId))
+    postData.append('postedBy[username]', appContext.username)
+    postData.append('postedBy[profilePicture]', appContext.profilePicture)
+
+    images.forEach((image, index) => {
+      postData.append(`images`, image)
     })
 
     try {
@@ -57,10 +60,6 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
       setResponse(errorMessage)
       setIsSuccess(false)
     }
-
-    // } finally {
-    //   setShowSnackbar(true);
-    // }
 
     setTitle('')
     setDescription('')
@@ -114,9 +113,7 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
                     ></textarea>
                   </div>
                   <div className="mb-4">
-                    <label htmlFor="image" className="text-lg ">
-                      Images
-                    </label>
+                    <label htmlFor="image" className="text-lg "></label>
                     <input
                       type="file"
                       id="image"
