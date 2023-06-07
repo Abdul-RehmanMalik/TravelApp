@@ -28,6 +28,8 @@ const Feed = () => {
   )
 
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isCommentsModalVisible, setIsCommentsModalVisible] = useState(false)
+
   const [expandedDescription, setExpandedDescription] = useState<{
     [postId: number]: boolean
   }>({})
@@ -57,7 +59,7 @@ const Feed = () => {
   }
   const openCommentsModal = (postId: number) => {
     setSelectedPostId(postId)
-    setIsModalVisible(true)
+    setIsCommentsModalVisible(true)
   }
 
   const closeModal = () => {
@@ -216,11 +218,11 @@ const Feed = () => {
         </div>
       ))}
       {/* Comments modal */}
-      {isModalVisible && selectedPostId && (
+      {isCommentsModalVisible && selectedPostId && (
         <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-white bg-opacity-50">
           <CommentsModal
             postId={selectedPostId}
-            closeModal={() => setIsModalVisible(false)}
+            closeModal={() => setIsCommentsModalVisible(false)}
           />
         </div>
       )}
