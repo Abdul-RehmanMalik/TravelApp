@@ -6,49 +6,54 @@ import PostModal from '../components/PostModal'
 import ProfileModal from '../components/ProfileModal'
 import SettingsModal from '../components/SettingsModal'
 import Feed from '../components/PostsFeed'
+
 export default function HomePage() {
   const appContext = useContext(AppContext)
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
-  // const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [myPostsUserId, setMyPostsUserId] = useState<number | null>(null)
 
   const handleProfileModal = () => {
     setIsProfileOpen(true)
-    // setIsDropdownOpen(false)
   }
+
   const closeProfileModal = () => {
     setIsProfileOpen(false)
   }
+
   const handleCreatePost = () => {
     setIsPostModalOpen(true)
   }
+
   const handleSettings = () => {
     setIsSettingsOpen(true)
-    // setIsDropdownOpen(false)
   }
-  // if (!appContext.loggedIn) {
-  //   return <Navigate to="/" />
-  // }
 
   const closeSettings = () => {
     setIsSettingsOpen(false)
   }
-  const accessToken = localStorage.getItem('accessToken')
-  //console.log(accessToken)
-  console.log(appContext.userId)
-  console.log('LoggedIn:', appContext.loggedIn)
-  //console.log(appContext.checkingSession)
-  console.log('isAct:', appContext.isActivated)
 
-  console.log('user id:', appContext.userId)
-  console.log('Profilepic:', appContext.profilePicture)
+  const handleMyPosts = () => {
+    if (appContext.loggedIn && appContext.userId) {
+      setMyPostsUserId(appContext.userId)
+    } else {
+      setMyPostsUserId(null)
+    }
+  }
+  const handleHome = () => {
+    setMyPostsUserId(null)
+  }
+  console.log('userId:', appContext.userId)
+
   return (
     <>
       <Navbar
         onCreatePost={handleCreatePost}
         onSettings={handleSettings}
         onProfile={handleProfileModal}
+        onMyPosts={handleMyPosts}
+        onHome={handleHome}
       />
       {appContext.isActivated ? null : (
         <VerificationPopUp isOpen={true} isVerified={false} />
@@ -64,9 +69,9 @@ export default function HomePage() {
       <div
         style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}
       >
-        <Feed />
+        <Feed userId={myPostsUserId} />
       </div>
-      {/*other components here*/}{' '}
+      {/*other components here*/}
     </>
   )
 }

@@ -77,8 +77,6 @@ export default function CommentsModal({
   }
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
 
-  // ...
-
   const handleCommentSubmit = async () => {
     try {
       if (newComment.trim() === '') {

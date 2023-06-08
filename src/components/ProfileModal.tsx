@@ -1,15 +1,30 @@
+import { useEffect, useState, useContext } from 'react'
+import { AppContext } from '../context/appContext'
 interface ProfileModalProps {
   isOpen: boolean
-  //   user: {
-  //     name: string
-  //     email: string
-  //     address: string
-  //     profilePicture: string
-  //   }
   onClose: () => void
 }
 
 const ProfileModal = ({ isOpen, onClose }: ProfileModalProps) => {
+  const [UserId, setUserId] = useState<number | null>(null)
+  const appContext = useContext(AppContext)
+  const [user, setUser] = useState<any>(null)
+  setUserId(appContext.userId)
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`/users/${UserId}`)
+        setUser(response)
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      }
+    }
+
+    if (isOpen) {
+      fetchUser()
+    }
+  }, [isOpen])
+
   if (!isOpen) {
     return null
   }
@@ -21,15 +36,15 @@ const ProfileModal = ({ isOpen, onClose }: ProfileModalProps) => {
         <h2 className="text-2xl font-bold mb-4">Profile</h2>
         <div className="flex flex-col items-center pt-6 pr-6 pb-6 pl-6">
           <img
-            src=""
+            src={user.profilePicture}
             className="flex-shrink-0 object-cover object-center btn- flex w-16 h-16 mr-auto -mb-8 ml-auto rounded-full shadow-xl"
             alt="Profile"
           />
           <p className="mt-8 text-xl font-semibold leading-none text-black tracking-tighter lg:text-3xl">
-            {'user.name'}
+            {user.name}
           </p>
-          <p className="mt-2 text-gray-600">{'user.email'}</p>
-          <p className="mt-2 text-gray-600">{'user.address'}</p>
+          <p className="mt-2 text-gray-600">{user.email}</p>
+          <p className="mt-2 text-gray-600">{user.address}</p>
         </div>
         <button
           className="bg-primary hover:bg-hovercolor text-white font-bold py-2 px-4 rounded mt-4"

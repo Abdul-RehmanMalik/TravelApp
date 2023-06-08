@@ -3,7 +3,11 @@ import apiInstance from '../axios'
 import { useContext } from 'react'
 import { AppContext } from '../context/appContext'
 import CommentsModal from './CommentsModal'
-const Feed = () => {
+interface FeedProps {
+  userId?: number | null
+}
+
+const Feed = ({ userId }: FeedProps) => {
   const [posts, setPosts] = useState<
     {
       pid: number
@@ -35,6 +39,14 @@ const Feed = () => {
   }>({})
 
   useEffect(() => {
+    if (userId) {
+      fetchUserPosts(userId)
+    } else {
+      fetchPosts()
+    }
+  }, [userId])
+
+  useEffect(() => {
     fetchPosts()
   }, [])
 
@@ -46,7 +58,17 @@ const Feed = () => {
       console.log(error)
     }
   }
-
+  const fetchUserPosts = async (userId: number) => {
+    try {
+      const response = await apiInstance.get(
+        `/posts/getuserposts?userId=${userId}`
+      )
+      setPosts(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  console.log('UserId in Feed:', userId)
   const calculateImageSize = (numImages: number): string => {
     const totalSize = 400 //  total size for the images (width + height)
     const imageSize = Math.floor(totalSize / numImages) // Calculate the size for each image
@@ -109,7 +131,7 @@ const Feed = () => {
     return (
       <>
         {imageRows.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex mb-4">
+          <div key={rowIndex} className="flex mb-4 justify-center">
             {row.map((image, index) => (
               <img
                 key={index}
