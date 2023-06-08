@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
 import { AppContext } from '../context/appContext'
+import apiInstance from '../axios'
 interface ProfileModalProps {
   isOpen: boolean
   onClose: () => void
@@ -13,7 +14,7 @@ const ProfileModal = ({ isOpen, onClose }: ProfileModalProps) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`/users/${UserId}`)
+        const response = await apiInstance.get(`/users/${UserId}`)
         setUser(response)
       } catch (error) {
         console.error('Error fetching user:', error)
