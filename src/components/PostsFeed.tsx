@@ -15,8 +15,9 @@ const Feed = ({ userId }: FeedProps) => {
       title: string
       description: string
       postedBy: {
-        userId: string
-        username: string
+        _id: string
+        id: number
+        name: string
         profilePicture: string
       }
       likes: number[]
@@ -54,6 +55,7 @@ const Feed = ({ userId }: FeedProps) => {
     try {
       const response = await apiInstance.get('/posts/getall')
       setPosts(response.data)
+      console.log('response:', response.data)
     } catch (error) {
       console.log(error)
     }
@@ -179,7 +181,7 @@ const Feed = ({ userId }: FeedProps) => {
               alt="Profile Picture"
               className="w-8 h-8 rounded-full mr-2"
             />
-            <h3 className="font-bold text-lg">{post.postedBy.username}</h3>
+            <h3 className="font-bold text-lg">{post.postedBy.name}</h3>
           </div>
           <div className="mb-4">{renderImages(post.images)}</div>
           <h3 className="font-bold text-lg">{post.title}</h3>

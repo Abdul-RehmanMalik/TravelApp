@@ -40,14 +40,12 @@ export default function PostModal({ isOpen, onClose }: PostModalProps) {
     const postData = new FormData()
     postData.append('title', title)
     postData.append('description', description)
-    postData.append('postedBy[userId]', String(appContext.userId))
-    postData.append('postedBy[username]', appContext.username)
-    postData.append('postedBy[profilePicture]', appContext.profilePicture)
+    postData.append('postedBy', String(appContext.userId))
 
     images.forEach((image, index) => {
       postData.append(`images`, image)
     })
-
+    console.log('PostData:', postData)
     try {
       const response = await apiInstance.post('/posts/createpost', postData)
       console.log('Response:', response.data)

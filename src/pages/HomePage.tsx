@@ -64,14 +64,12 @@ export default function HomePage() {
           onClose={() => setIsPostModalOpen(false)}
         />
       )}
-      <ProfileModal isOpen={isProfileOpen} onClose={closeProfileModal} />
+      {/* <ProfileModal isOpen={isProfileOpen} onClose={closeProfileModal} /> */}
       <SettingsModal isOpen={isSettingsOpen} onClose={closeSettings} />
-      <div
-        style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}
-      >
+      <div className="flex justify-center mt-6 sm:mt-12">
         <Feed userId={myPostsUserId} />
       </div>
-      {/*other components here*/}
+      {/* other components here */}
     </>
   )
 }

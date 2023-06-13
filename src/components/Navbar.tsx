@@ -60,7 +60,9 @@ export default function Navbar({
                   d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                 />
               </svg>
-              <span className="text-lg font-medium text-gray-900">Home</span>
+              <span className="px-4 py-2 bg-primary text-white active:bg-white hover:bg-white hover:text-primary rounded-md font-semibold shadow">
+                Home
+              </span>
             </a>
             <div className="ml-8">
               <div className="flex space-x-4">
@@ -75,7 +77,7 @@ export default function Navbar({
               <button
                 type="button"
                 onClick={onMyPosts}
-                className="px-4 py-2 bg-primary text-white rounded-md font-semibold shadow"
+                className="px-4 py-2 bg-primary text-white active:bg-white hover:bg-white hover:text-primary rounded-md font-semibold shadow"
               >
                 My Posts
               </button>
