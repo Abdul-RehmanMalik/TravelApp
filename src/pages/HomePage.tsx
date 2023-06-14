@@ -6,6 +6,7 @@ import PostModal from '../components/PostModal'
 import ProfileModal from '../components/ProfileModal'
 import SettingsModal from '../components/SettingsModal'
 import Feed from '../components/PostsFeed'
+import DetailsModal from '../components/DetailsModal'
 
 export default function HomePage() {
   const appContext = useContext(AppContext)
@@ -69,6 +70,8 @@ export default function HomePage() {
       <div className="flex justify-center mt-6 sm:mt-12">
         <Feed userId={myPostsUserId} />
       </div>
+
+      {/*other components here*/}
       {/* other components here */}
     </>
   )

@@ -7,7 +7,7 @@ interface Comment {
   commentedBy: {
     userId: number
     profilePicture: string
-    username: string
+    name: string
   }
   text: string
 }
@@ -50,12 +50,12 @@ export default function CommentsModal({
         />
         <div>
           <div className="flex items-start mb-2">
-            <h4 className="font-semibold">{comment.commentedBy.username}</h4>
+            <h4 className="font-semibold">{comment.commentedBy.name}</h4>
           </div>
           <div className="flex items-start mb-2">
             <div className="comment-text">{comment.text}</div>
           </div>
-          {comment.commentedBy.username === appContext.username && (
+          {comment.commentedBy.name === appContext.username && (
             <div className="flex items-start mb-2">
               <button
                 className="text-blue-600 mr-2"
@@ -99,11 +99,7 @@ export default function CommentsModal({
         const newCommentData = {
           pid: postId,
           text: newComment,
-          commentedBy: {
-            userId: appContext.userId,
-            profilePicture: appContext.profilePicture,
-            username: appContext.username,
-          },
+          userId: appContext.userId,
         }
 
         await apiInstance.post('/posts/addcomment', newCommentData)

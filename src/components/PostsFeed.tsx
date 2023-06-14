@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import apiInstance from '../axios'
 import { useContext } from 'react'
 import { AppContext } from '../context/appContext'
 import CommentsModal from './CommentsModal'
+
 interface FeedProps {
   userId?: number | null
 }
@@ -31,13 +32,12 @@ const Feed = ({ userId }: FeedProps) => {
   const [selectedPostId, setSelectedPostId] = useState<number | undefined>(
     undefined
   )
-
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isCommentsModalVisible, setIsCommentsModalVisible] = useState(false)
-
   const [expandedDescription, setExpandedDescription] = useState<{
     [postId: number]: boolean
   }>({})
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (userId) {
@@ -60,6 +60,7 @@ const Feed = ({ userId }: FeedProps) => {
       console.log(error)
     }
   }
+
   const fetchUserPosts = async (userId: number) => {
     try {
       const response = await apiInstance.get(
@@ -70,9 +71,9 @@ const Feed = ({ userId }: FeedProps) => {
       console.log(error)
     }
   }
-  console.log('UserId in Feed:', userId)
+
   const calculateImageSize = (numImages: number): string => {
-    const totalSize = 400 //  total size for the images (width + height)
+    const totalSize = 400 // total size for the images (width + height)
     const imageSize = Math.floor(totalSize / numImages) // Calculate the size for each image
     return `${imageSize}px`
   }
@@ -81,6 +82,7 @@ const Feed = ({ userId }: FeedProps) => {
     setClickedImage(image)
     setIsModalVisible(true)
   }
+
   const openCommentsModal = (postId: number) => {
     setSelectedPostId(postId)
     setIsCommentsModalVisible(true)
@@ -97,6 +99,7 @@ const Feed = ({ userId }: FeedProps) => {
       [postId]: !prevState[postId],
     }))
   }
+
   const likePost = async (postId: number) => {
     try {
       const postLikeData = {
@@ -116,6 +119,7 @@ const Feed = ({ userId }: FeedProps) => {
       console.log(error)
     }
   }
+
   const renderImages = (images: string[]) => {
     const numImages = images.length
     const imageRows: string[][] = []
@@ -168,12 +172,20 @@ const Feed = ({ userId }: FeedProps) => {
     return description
   }
 
+  const handleEditPost = (postId: number) => {}
+
+  const handleDeletePost = (postId: number) => {}
+
+  const toggleDropdown = () => {
+    dropdownRef.current?.classList.toggle('hidden')
+  }
+
   return (
     <div className="container mx-auto">
       {posts.map((post) => (
         <div
           key={post.pid}
-          className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col"
+          className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col relative"
         >
           <div className="flex items-center mb-2">
             <img
@@ -182,6 +194,52 @@ const Feed = ({ userId }: FeedProps) => {
               className="w-8 h-8 rounded-full mr-2"
             />
             <h3 className="font-bold text-lg">{post.postedBy.name}</h3>
+            <div className="ml-auto relative">
+              <button
+                id={`dropdownMenuIconButton-${post.pid}`}
+                data-dropdown-toggle={`dropdownDots-${post.pid}`}
+                className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-primary focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600 hover:text-white"
+                type="button"
+                onClick={toggleDropdown}
+              >
+                <svg
+                  className="w-6 h-6"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+                </svg>
+              </button>
+              <div
+                id={`dropdownDots-${post.pid}`}
+                ref={dropdownRef}
+                className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 absolute top-10 right-0"
+              >
+                <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-2 py-2 text-blue-600 hover:bg-primary hover:text-white font-semibold"
+                      onClick={() => handleEditPost(post.pid)}
+                    >
+                      Edit
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-2 py-2 text-red-600 hover:bg-primary  hover:text-white font-semibold"
+                      onClick={() => handleDeletePost(post.pid)}
+                      // className="bg-primary text-white active:bg-white hover:bg-white hover:text-primary font-semibold px-4 py-2 rounded"
+                    >
+                      Delete
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
           <div className="mb-4">{renderImages(post.images)}</div>
           <h3 className="font-bold text-lg">{post.title}</h3>
@@ -215,7 +273,6 @@ const Feed = ({ userId }: FeedProps) => {
                   fillRule="evenodd"
                   d="M10.707 3.293A1 1 0 0 0 9.293 4.707L11 6.414V15a1 1 0 1 0 2 0V6.414l1.707-1.707A1 1 0 0 0 13.707 3.293l-5-5a1 1 0 0 0-1.414 0l-5 5a1 1 0 0 0 1.414 1.414L5 4.414V15a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V4.414l2.293 2.293a1 1 0 0 0 1.414-1.414l-5-5zM6 7a1 1 0 0 0-1 1v7.586l-1.293-1.293a1 1 0 1 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l3-3a1 1 0 0 0-1.414-1.414L7 15.586V8a1 1 0 0 0-1-1zm8 0H6a1 1 0 0 0-1 1v7.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l3-3a1 1 0 0 0-1.414-1.414L15 15.586V8a1 1 0 0 0-1-1z"
                 />
-                {/* Like icon */}
               </svg>
               {post.liked ? 'Liked' : 'Like'}
             </button>
@@ -234,9 +291,17 @@ const Feed = ({ userId }: FeedProps) => {
                   fillRule="evenodd"
                   d="M3 2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H3zm3 5a1 1 0 1 1 0-2h8a1 1 0 1 1 0 2H6zm0 4a1 1 0 1 1 0-2h8a1 1 0 1 1 0 2H6zm0 4a1 1 0 1 1 0-2h4a1 1 0 1 1 0 2H6z"
                 />
-                {/* Comment icon */}
               </svg>
               Comment
+            </button>
+            <button className="flex items-center text-primary ml-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-4 h-4 mr-1"
+              ></svg>
+              Details
             </button>
           </div>
         </div>
