@@ -72,8 +72,20 @@ const Feed = ({ userId }: FeedProps) => {
     }
   }
 
+  // const calculateImageSize = (numImages: number): string => {
+  //   const totalSize = 400 // total size for the images (width + height)
+  //   const imageSize = Math.floor(totalSize / numImages) // Calculate the size for each image
+  //   return `${imageSize}px`
+  // }
   const calculateImageSize = (numImages: number): string => {
-    const totalSize = 400 // total size for the images (width + height)
+    let totalSize = 400 // total size for the images (width + height)
+    if (window.innerWidth <= 640) {
+      // for small screens
+      totalSize = 200
+    } else if (window.innerWidth <= 768) {
+      // for medium screens
+      totalSize = 250
+    }
     const imageSize = Math.floor(totalSize / numImages) // Calculate the size for each image
     return `${imageSize}px`
   }
@@ -143,7 +155,17 @@ const Feed = ({ userId }: FeedProps) => {
                 key={index}
                 src={image}
                 alt=""
-                className="w-1/2 h-auto mr-2 cursor-pointer"
+                // className="w-1/2 h-auto mr-2 cursor-pointer"
+                className={`w-1/2 h-auto mr-2 cursor-pointer ${
+                  window.innerWidth <= 640 ? 'w-full' : ''
+                }`}
+                // className={`cursor-pointer ${
+                //   window.innerWidth <= 640
+                //     ? 'w-full'
+                //     : window.innerWidth <= 768
+                //     ? 'w-1/2'
+                //     : 'w-1/2'
+                // }`}
                 style={{
                   width: calculateImageSize(row.length),
                   height: calculateImageSize(row.length),
@@ -181,7 +203,7 @@ const Feed = ({ userId }: FeedProps) => {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       {posts.map((post) => (
         <div
           key={post.pid}
@@ -306,13 +328,25 @@ const Feed = ({ userId }: FeedProps) => {
           </div>
         </div>
       ))}
-      {/* Comments modal */}
+      {/* Comments modal
       {isCommentsModalVisible && selectedPostId && (
         <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-white bg-opacity-50">
           <CommentsModal
             postId={selectedPostId}
             closeModal={() => setIsCommentsModalVisible(false)}
           />
+        </div>
+      )} */}
+      {/* Comments modal */}
+      {isCommentsModalVisible && selectedPostId && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50">
+          {/* <div className="bg-white p-4 w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 rounded-lg"> */}
+          <div className="bg-white p-4 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4 rounded-lg overflow-auto">
+            <CommentsModal
+              postId={selectedPostId}
+              closeModal={() => setIsCommentsModalVisible(false)}
+            />
+          </div>
         </div>
       )}
     </div>

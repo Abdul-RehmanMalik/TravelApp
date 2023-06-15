@@ -75,6 +75,7 @@ export default function CommentsModal({
       </div>
     ))
   }
+
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
 
   const handleCommentSubmit = async () => {
@@ -129,12 +130,9 @@ export default function CommentsModal({
   }
 
   return (
-    <div className="bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg p-4 w-96">
+    <div className="bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg p-4 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
       <h3 className="text-xl font-bold mb-4">Comments</h3>
-      <div
-        className="comments-container"
-        style={{ maxHeight: '250px', overflowY: 'scroll' }}
-      >
+      <div className="comments-container max-h-48 sm:max-h-96 md:max-h-144 overflow-y-scroll">
         {renderComments()}
       </div>
       <div className="mt-4">
@@ -146,7 +144,7 @@ export default function CommentsModal({
           onChange={(e) => setNewComment(e.target.value)}
         />
         <button
-          className="px-4 py-2 mt-2 text-sm bg-white-600 text-primary active:bg-primary hover:bg-primary hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+          className="px-4 py-2 mt-2 text-sm bg-white-600 text-primary active:bg-primary hover:bg-primary hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 sm:w-auto sm:ml-2"
           onClick={handleCommentSubmit}
         >
           Submit
@@ -154,7 +152,7 @@ export default function CommentsModal({
       </div>
       <div className="flex justify-end mt-4">
         <button
-          className="px-4 py-2 text-sm bg-white-600 text-red-600 active:bg-red-600 hover:bg-red-600 hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+          className="px-4 py-2 text-sm bg-white-600 text-red-600 active:bg-red-600 hover:bg-red-600 hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 w-full sm:w-auto"
           onClick={closeModal}
         >
           Close

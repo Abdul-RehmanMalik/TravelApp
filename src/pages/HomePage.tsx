@@ -70,8 +70,6 @@ export default function HomePage() {
       <div className="flex justify-center mt-6 sm:mt-12">
         <Feed userId={myPostsUserId} />
       </div>
-
-      {/*other components here*/}
       {/* other components here */}
     </>
   )
