@@ -38,6 +38,10 @@ const Feed = ({ userId }: FeedProps) => {
     [postId: number]: boolean
   }>({})
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const pageRef = useRef<number>(1)
+  const limitRef = useRef<number>(2)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const loadingRef = useRef(false)
 
   useEffect(() => {
     if (userId) {
@@ -47,14 +51,61 @@ const Feed = ({ userId }: FeedProps) => {
     }
   }, [userId])
 
+  // useEffect(() => {
+  //   fetchPosts()
+  // }, [])
+
+  // const fetchPosts = async () => {
+  //   try {
+  //     const response = await apiInstance.get('/posts/getall')
+  //     setPosts(response.data)
+  //     console.log('response:', response.data)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+  // const fetchUserPosts = async (userId: number) => {
+  //   try {
+  //     const response = await apiInstance.get(
+  //       `/posts/getuserposts?userId=${userId}`
+  //     )
+  //     setPosts(response.data)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+  const handleScroll = () => {
+    if (loadingRef.current) return
+
+    const bottomOfPosts = containerRef.current?.getBoundingClientRect()
+      .bottom as number
+    const heightOfWindow = window.innerHeight
+
+    if (bottomOfPosts < heightOfWindow && bottomOfPosts !== undefined) {
+      loadMorePosts()
+    }
+  }
+
   useEffect(() => {
-    fetchPosts()
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   const fetchPosts = async () => {
     try {
-      const response = await apiInstance.get('/posts/getall')
-      setPosts(response.data)
+      const response = await apiInstance.get('/posts/getall', {
+        params: {
+          page: 1,
+          limit: limitRef.current,
+        },
+      })
+      setPosts(response.data.data)
+      pageRef.current = 1
       console.log('response:', response.data)
     } catch (error) {
       console.log(error)
@@ -64,29 +115,66 @@ const Feed = ({ userId }: FeedProps) => {
   const fetchUserPosts = async (userId: number) => {
     try {
       const response = await apiInstance.get(
-        `/posts/getuserposts?userId=${userId}`
+        `/posts/getuserposts?userId=${userId}`,
+        {
+          params: {
+            page: 1,
+            limit: limitRef.current,
+          },
+        }
       )
-      setPosts(response.data)
+      setPosts(response.data.data)
+      pageRef.current = 1
+      console.log('response:', response.data)
     } catch (error) {
       console.log(error)
     }
   }
 
+  const loadMorePosts = async () => {
+    try {
+      if (loadingRef.current) return
+
+      loadingRef.current = true
+
+      const response = await apiInstance.get('/posts/getall', {
+        params: {
+          page: pageRef.current + 1,
+          limit: limitRef.current,
+        },
+      })
+
+      if (response.data.data.length > 0) {
+        setPosts((prevPosts) => [...prevPosts, ...response.data.data])
+        pageRef.current = pageRef.current + 1
+      }
+
+      loadingRef.current = false
+    } catch (error) {
+      console.log(error)
+    }
+  }
   // const calculateImageSize = (numImages: number): string => {
   //   const totalSize = 400 // total size for the images (width + height)
   //   const imageSize = Math.floor(totalSize / numImages) // Calculate the size for each image
   //   return `${imageSize}px`
   // }
+  // const calculateImageSize = (numImages: number): string => {
+  //   let totalSize = 400 // total size for the images (width + height)
+  //   if (window.innerWidth <= 640) {
+  //     // for small screens
+  //     totalSize = 200
+  //   } else if (window.innerWidth <= 768) {
+  //     // for medium screens
+  //     totalSize = 250
+  //   }
+  //   const imageSize = Math.floor(totalSize / numImages) // Calculate the size for each image
+  //   return `${imageSize}px`
+  // }
   const calculateImageSize = (numImages: number): string => {
-    let totalSize = 400 // total size for the images (width + height)
-    if (window.innerWidth <= 640) {
-      // for small screens
-      totalSize = 200
-    } else if (window.innerWidth <= 768) {
-      // for medium screens
-      totalSize = 250
-    }
-    const imageSize = Math.floor(totalSize / numImages) // Calculate the size for each image
+    const containerWidth = containerRef.current?.clientWidth || 0
+    const maxImageSize = Math.floor(containerWidth / numImages) / 2
+    const imageSize = Math.min(maxImageSize, 400) //maximum size of 400px
     return `${imageSize}px`
   }
 
@@ -328,6 +416,7 @@ const Feed = ({ userId }: FeedProps) => {
           </div>
         </div>
       ))}
+      <div ref={containerRef}></div>
       {/* Comments modal
       {isCommentsModalVisible && selectedPostId && (
         <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-white bg-opacity-50">
