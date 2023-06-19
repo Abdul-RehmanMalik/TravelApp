@@ -37,9 +37,9 @@ const Feed = ({ userId }: FeedProps) => {
   const [expandedDescription, setExpandedDescription] = useState<{
     [postId: number]: boolean
   }>({})
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({})
   const pageRef = useRef<number>(1)
-  const limitRef = useRef<number>(2)
+  // const limitRef = useRef<number>(2)
   const containerRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef(false)
 
@@ -101,7 +101,7 @@ const Feed = ({ userId }: FeedProps) => {
       const response = await apiInstance.get('/posts/getall', {
         params: {
           page: 1,
-          limit: limitRef.current,
+          // limit: limitRef.current,
         },
       })
       setPosts(response.data.data)
@@ -119,7 +119,7 @@ const Feed = ({ userId }: FeedProps) => {
         {
           params: {
             page: 1,
-            limit: limitRef.current,
+            // limit: limitRef.current,
           },
         }
       )
@@ -140,7 +140,7 @@ const Feed = ({ userId }: FeedProps) => {
       const response = await apiInstance.get('/posts/getall', {
         params: {
           page: pageRef.current + 1,
-          limit: limitRef.current,
+          // limit: limitRef.current,
         },
       })
 
@@ -285,9 +285,8 @@ const Feed = ({ userId }: FeedProps) => {
   const handleEditPost = (postId: number) => {}
 
   const handleDeletePost = (postId: number) => {}
-
-  const toggleDropdown = () => {
-    dropdownRef.current?.classList.toggle('hidden')
+  const toggleDropdown = (postId: number) => {
+    dropdownRefs.current[postId]?.classList.toggle('hidden')
   }
 
   return (
@@ -310,7 +309,7 @@ const Feed = ({ userId }: FeedProps) => {
                 data-dropdown-toggle={`dropdownDots-${post.pid}`}
                 className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-primary focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600 hover:text-white"
                 type="button"
-                onClick={toggleDropdown}
+                onClick={() => toggleDropdown(post.pid)}
               >
                 <svg
                   className="w-6 h-6"
@@ -324,7 +323,9 @@ const Feed = ({ userId }: FeedProps) => {
               </button>
               <div
                 id={`dropdownDots-${post.pid}`}
-                ref={dropdownRef}
+                ref={(el) => {
+                  dropdownRefs.current[post.pid] = el
+                }}
                 className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 absolute top-10 right-0"
               >
                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">

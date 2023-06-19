@@ -135,7 +135,7 @@ export default function CommentsModal({
       <div className="comments-container max-h-48 sm:max-h-96 md:max-h-144 overflow-y-scroll">
         {renderComments()}
       </div>
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <input
           type="text"
           placeholder="Add a comment"
@@ -144,12 +144,29 @@ export default function CommentsModal({
           onChange={(e) => setNewComment(e.target.value)}
         />
         <button
-          className="px-4 py-2 mt-2 text-sm bg-white-600 text-primary active:bg-primary hover:bg-primary hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 sm:w-auto sm:ml-2"
+          className="px-4 py-2 mt-2 text-sm bg-white-600 text-primary active:bg-primary hover:bg-primary hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 sm:w-auto sm:ml-2 "
+          onClick={handleCommentSubmit}
+        >
+          Submit
+        </button>
+      </div> */}
+      <div className="mt-4">
+        <input
+          type="text"
+          placeholder="Add a comment"
+          className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:border-primary text-black"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          style={{ color: '#000' }}
+        />
+        <button
+          className="px-4 py-2 mt-2 text-sm bg-white-600 text-primary active:bg-primary hover:bg-primary hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
           onClick={handleCommentSubmit}
         >
           Submit
         </button>
       </div>
+
       <div className="flex justify-end mt-4">
         <button
           className="px-4 py-2 text-sm bg-white-600 text-red-600 active:bg-red-600 hover:bg-red-600 hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 w-full sm:w-auto"
