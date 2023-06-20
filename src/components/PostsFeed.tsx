@@ -3,6 +3,7 @@ import apiInstance from '../axios'
 import { useContext } from 'react'
 import { AppContext } from '../context/appContext'
 import CommentsModal from './CommentsModal'
+import LikesModal from './likesmodal'
 
 interface FeedProps {
   userId?: number | null
@@ -37,6 +38,7 @@ const Feed = ({ userId }: FeedProps) => {
   const [expandedDescription, setExpandedDescription] = useState<{
     [postId: number]: boolean
   }>({})
+  const [isLikesModalVisible, setIsLikesModalVisible] = useState(false) // Updated variable
   const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({})
   const pageRef = useRef<number>(1)
   // const limitRef = useRef<number>(2)
@@ -50,31 +52,6 @@ const Feed = ({ userId }: FeedProps) => {
       fetchPosts()
     }
   }, [userId])
-
-  // useEffect(() => {
-  //   fetchPosts()
-  // }, [])
-
-  // const fetchPosts = async () => {
-  //   try {
-  //     const response = await apiInstance.get('/posts/getall')
-  //     setPosts(response.data)
-  //     console.log('response:', response.data)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  // const fetchUserPosts = async (userId: number) => {
-  //   try {
-  //     const response = await apiInstance.get(
-  //       `/posts/getuserposts?userId=${userId}`
-  //     )
-  //     setPosts(response.data)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   const handleScroll = () => {
     if (loadingRef.current) return
@@ -192,6 +169,10 @@ const Feed = ({ userId }: FeedProps) => {
     setIsModalVisible(false)
     setClickedImage(undefined)
   }
+  const handleLikeCountClick = (postId: number) => {
+    setSelectedPostId(postId)
+    setIsLikesModalVisible(true)
+  }
 
   const toggleDescription = (postId: number) => {
     setExpandedDescription((prevState) => ({
@@ -199,27 +180,49 @@ const Feed = ({ userId }: FeedProps) => {
       [postId]: !prevState[postId],
     }))
   }
-
   const likePost = async (postId: number) => {
     try {
+      const post = posts.find((post) => post.pid === postId)
+      if (!post) return
+
+      const updatedPost = { ...post }
+      if (updatedPost.liked) {
+        updatedPost.liked = false
+        updatedPost.likes = updatedPost.likes.filter(
+          (likeId) => likeId !== appContext.userId
+        )
+      } else {
+        updatedPost.liked = true
+        updatedPost.likes.push(appContext.userId)
+      }
+
+      setPosts((prevPosts) =>
+        prevPosts.map((prevPost) =>
+          prevPost.pid === postId ? updatedPost : prevPost
+        )
+      )
+
       const postLikeData = {
         userId: appContext.userId,
         pid: postId,
       }
-      await apiInstance.put('/posts/like', postLikeData)
-      setPosts((prevPosts) =>
-        prevPosts.map((post) => {
-          if (post.pid === postId) {
-            return { ...post, liked: true }
-          }
-          return post
-        })
-      )
+
+      const response = await apiInstance.put('/posts/like', postLikeData)
+      const updatedLikeCount = response?.data?.likeCount
+
+      if (updatedLikeCount !== undefined) {
+        updatedPost.likes = updatedLikeCount
+
+        setPosts((prevPosts) =>
+          prevPosts.map((prevPost) =>
+            prevPost.pid === postId ? updatedPost : prevPost
+          )
+        )
+      }
     } catch (error) {
       console.log(error)
     }
   }
-
   const renderImages = (images: string[]) => {
     const numImages = images.length
     const imageRows: string[][] = []
@@ -243,17 +246,9 @@ const Feed = ({ userId }: FeedProps) => {
                 key={index}
                 src={image}
                 alt=""
-                // className="w-1/2 h-auto mr-2 cursor-pointer"
                 className={`w-1/2 h-auto mr-2 cursor-pointer ${
                   window.innerWidth <= 640 ? 'w-full' : ''
                 }`}
-                // className={`cursor-pointer ${
-                //   window.innerWidth <= 640
-                //     ? 'w-full'
-                //     : window.innerWidth <= 768
-                //     ? 'w-1/2'
-                //     : 'w-1/2'
-                // }`}
                 style={{
                   width: calculateImageSize(row.length),
                   height: calculateImageSize(row.length),
@@ -343,7 +338,6 @@ const Feed = ({ userId }: FeedProps) => {
                       href="#"
                       className="block px-2 py-2 text-red-600 hover:bg-primary  hover:text-white font-semibold"
                       onClick={() => handleDeletePost(post.pid)}
-                      // className="bg-primary text-white active:bg-white hover:bg-white hover:text-primary font-semibold px-4 py-2 rounded"
                     >
                       Delete
                     </a>
@@ -378,7 +372,7 @@ const Feed = ({ userId }: FeedProps) => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                className="w-4 h-4 mr-1"
+                className="w-4 h-4 "
               >
                 <path
                   fillRule="evenodd"
@@ -387,7 +381,14 @@ const Feed = ({ userId }: FeedProps) => {
               </svg>
               {post.liked ? 'Liked' : 'Like'}
             </button>
-            <span className="mx-2"></span>
+            <span className="mx-1"></span>
+            <button
+              className="flex items-center text-primary ml-0 mr-2"
+              onClick={() => handleLikeCountClick(post.pid)}
+            >
+              {post.likes.length}
+            </button>
+
             <button
               className="flex items-center text-primary"
               onClick={() => openCommentsModal(post.pid)}
@@ -396,7 +397,7 @@ const Feed = ({ userId }: FeedProps) => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                className="w-4 h-4 mr-1"
+                className="w-4 h-4"
               >
                 <path
                   fillRule="evenodd"
@@ -405,13 +406,7 @@ const Feed = ({ userId }: FeedProps) => {
               </svg>
               Comment
             </button>
-            <button className="flex items-center text-primary ml-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="w-4 h-4 mr-1"
-              ></svg>
+            <button className="flex items-center text-primary ml-2 mr-1">
               Details
             </button>
           </div>
@@ -429,12 +424,21 @@ const Feed = ({ userId }: FeedProps) => {
       )} */}
       {/* Comments modal */}
       {isCommentsModalVisible && selectedPostId && (
-        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50">
-          {/* <div className="bg-white p-4 w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4 rounded-lg"> */}
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
           <div className="bg-white p-4 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4 rounded-lg overflow-auto">
             <CommentsModal
               postId={selectedPostId}
               closeModal={() => setIsCommentsModalVisible(false)}
+            />
+          </div>
+        </div>
+      )}
+      {isLikesModalVisible && selectedPostId && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
+          <div className="bg-white p-4 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4 rounded-lg overflow-auto">
+            <LikesModal
+              postId={selectedPostId}
+              closeModal={() => setIsLikesModalVisible(false)}
             />
           </div>
         </div>

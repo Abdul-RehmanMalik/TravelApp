@@ -7,9 +7,7 @@ import ProfileModal from '../components/ProfileModal'
 import SettingsModal from '../components/SettingsModal'
 import Feed from '../components/PostsFeed'
 import DetailsModal from '../components/DetailsModal'
-import ComplexNavbar from '../components/bar'
 import NavbarModified from '../components/bar'
-import Example from '../components/bar'
 
 export default function HomePage() {
   const appContext = useContext(AppContext)
