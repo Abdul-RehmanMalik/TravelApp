@@ -1,12 +1,10 @@
 import { useContext, useState } from 'react'
-import Navbar from '../components/Navbar'
 import VerificationPopUp from '../components/VerificationPopup'
 import { AppContext } from '../context/appContext'
 import PostModal from '../components/PostModal'
 import ProfileModal from '../components/ProfileModal'
 import SettingsModal from '../components/SettingsModal'
 import Feed from '../components/PostsFeed'
-import DetailsModal from '../components/DetailsModal'
 import NavbarModified from '../components/bar'
 
 export default function HomePage() {
@@ -58,9 +56,7 @@ export default function HomePage() {
         onHome={handleHome}
       /> */}
       <NavbarModified onSettings={handleSettings} />
-      {appContext.isActivated ? null : (
-        <VerificationPopUp isOpen={true} isVerified={false} />
-      )}
+
       {isPostModalOpen && (
         <PostModal
           isOpen={isPostModalOpen}
@@ -69,9 +65,12 @@ export default function HomePage() {
       )}
       {/* <ProfileModal isOpen={isProfileOpen} onClose={closeProfileModal} /> */}
       <SettingsModal isOpen={isSettingsOpen} onClose={closeSettings} />
-      <div className="flex justify-center mt-6 sm:mt-12">
-        <Feed userId={myPostsUserId} />
-      </div>
+      {/* <div className="flex justify-center mt-6 sm:mt-12"> */}
+      <Feed userId={myPostsUserId} />
+      {/* </div> */}
+      {appContext.isActivated ? null : (
+        <VerificationPopUp isOpen={true} isVerified={false} />
+      )}
       {/* other components here */}
     </>
   )

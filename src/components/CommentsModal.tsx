@@ -1,11 +1,11 @@
 import { useState, useEffect, useContext } from 'react'
 import apiInstance from '../axios'
 import { AppContext } from '../context/appContext'
-
+import ProfileModal from './ProfileModal'
 interface Comment {
   cid: number
   commentedBy: {
-    userId: number
+    id: number
     profilePicture: string
     name: string
   }
@@ -24,6 +24,9 @@ export default function CommentsModal({
   const [comments, setComments] = useState<Comment[]>([])
   const [newComment, setNewComment] = useState('')
   const appContext = useContext(AppContext)
+  const [selectedUser, setSelectedUser] = useState<
+    Comment['commentedBy'] | null
+  >(null)
 
   useEffect(() => {
     fetchComments()
@@ -40,17 +43,35 @@ export default function CommentsModal({
     }
   }
 
+  const openProfileModal = (user: Comment['commentedBy']) => {
+    setSelectedUser(user)
+  }
+
+  const closeProfileModal = () => {
+    setSelectedUser(null)
+  }
+
   const renderComments = () => {
     return comments.map((comment) => (
       <div key={comment.cid} className="flex items-start mb-4">
-        <img
-          src={comment.commentedBy.profilePicture}
-          alt="Profile Picture"
-          className="w-8 h-8 rounded-full mr-2"
-        />
+        <button
+          className="flex items-center"
+          onClick={() => openProfileModal(comment.commentedBy)}
+        >
+          <img
+            src={comment.commentedBy.profilePicture}
+            alt="Profile Picture"
+            className="w-8 h-8 rounded-full mr-2 cursor-pointer hover:opacity-75"
+          />
+        </button>
         <div>
           <div className="flex items-start mb-2">
-            <h4 className="font-semibold">{comment.commentedBy.name}</h4>
+            <h4
+              className="font-semibold cursor-pointer hover:underline hover:text-primary"
+              onClick={() => openProfileModal(comment.commentedBy)}
+            >
+              {comment.commentedBy.name}
+            </h4>
           </div>
           <div className="flex items-start mb-2">
             <div className="comment-text">{comment.text}</div>
@@ -130,51 +151,44 @@ export default function CommentsModal({
   }
 
   return (
-    <div className="bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg p-4 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
-      <h3 className="text-xl font-bold mb-4">Comments</h3>
-      <div className="comments-container max-h-48 sm:max-h-96 md:max-h-144 overflow-y-scroll">
-        {renderComments()}
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
+      <div className="bg-white p-4 w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4 rounded-lg overflow-auto">
+        <h3 className="text-xl font-bold mb-4">Comments</h3>
+        <div className="comments-container max-h-48 sm:max-h-96 md:max-h-144 overflow-y-scroll">
+          {renderComments()}
+        </div>
+        <div className="mt-4">
+          <input
+            type="text"
+            placeholder="Add a comment"
+            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:border-primary text-black"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            style={{ color: '#000' }}
+          />
+          <button
+            className="px-4 py-2 mt-2 text-sm bg-white-600 text-primary active:bg-primary hover:bg-primary hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+            onClick={handleCommentSubmit}
+          >
+            Submit
+          </button>
+        </div>
+        <div className="flex justify-end mt-4">
+          <button
+            className="px-4 py-2 text-sm bg-white-600 text-red-600 active:bg-red-600 hover:bg-red-600 hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 w-full sm:w-auto"
+            onClick={closeModal}
+          >
+            Close
+          </button>
+        </div>
       </div>
-      {/* <div className="mt-4">
-        <input
-          type="text"
-          placeholder="Add a comment"
-          className="w-full px-2 py-1 border border-gray-300 rounded"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
+      {selectedUser && (
+        <ProfileModal
+          isOpen={true}
+          onClose={closeProfileModal}
+          userId={selectedUser.id}
         />
-        <button
-          className="px-4 py-2 mt-2 text-sm bg-white-600 text-primary active:bg-primary hover:bg-primary hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 sm:w-auto sm:ml-2 "
-          onClick={handleCommentSubmit}
-        >
-          Submit
-        </button>
-      </div> */}
-      <div className="mt-4">
-        <input
-          type="text"
-          placeholder="Add a comment"
-          className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:border-primary text-black"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          style={{ color: '#000' }}
-        />
-        <button
-          className="px-4 py-2 mt-2 text-sm bg-white-600 text-primary active:bg-primary hover:bg-primary hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-          onClick={handleCommentSubmit}
-        >
-          Submit
-        </button>
-      </div>
-
-      <div className="flex justify-end mt-4">
-        <button
-          className="px-4 py-2 text-sm bg-white-600 text-red-600 active:bg-red-600 hover:bg-red-600 hover:text-white font-bold uppercase rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 w-full sm:w-auto"
-          onClick={closeModal}
-        >
-          Close
-        </button>
-      </div>
+      )}
     </div>
   )
 }
