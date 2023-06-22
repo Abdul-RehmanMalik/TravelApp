@@ -6,7 +6,6 @@ interface ProfileModalProps {
   onClose: () => void
   userId: number
 }
-
 interface User {
   id: number
   profilePicture: string

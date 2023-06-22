@@ -4,11 +4,12 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useContext, useState } from 'react'
 import { AppContext } from '../context/appContext'
 import { useNavigate } from 'react-router-dom'
+import PostModal from './PostModal'
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
-  { name: 'Projects', href: '#', current: false },
+  { name: 'Home', href: '#', current: true },
+  { name: 'My Posts', href: '#', current: false },
+  { name: 'Create Post', href: '#', current: false },
   { name: 'Calendar', href: '#', current: false },
 ]
 
@@ -16,16 +17,22 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 interface NavbarProps {
-  // onCreatePost: () => void
+  onCreatePost: () => void
   onSettings: () => void
   // onProfile: () => void
-  // onMyPosts: () => void
-  // onHome: () => void
+  onMyPosts: () => void
+  onHome: () => void
 }
 
-export default function NavbarModified({ onSettings }: NavbarProps) {
+export default function NavbarModified({
+  onCreatePost,
+  onSettings,
+  onMyPosts,
+  onHome,
+}: NavbarProps) {
   const appContext = useContext(AppContext)
   const navigate = useNavigate()
+  const [isPostModalOpen, setPostModalOpen] = useState(false)
 
   const handleSignOut = async () => {
     try {
@@ -45,7 +52,7 @@ export default function NavbarModified({ onSettings }: NavbarProps) {
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-white hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
                     <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
@@ -73,6 +80,7 @@ export default function NavbarModified({ onSettings }: NavbarProps) {
                       <a
                         key={item.name}
                         href={item.href}
+                        // href={item.name === 'Create Posts' ? '#' : item.href}
                         className={classNames(
                           item.current
                             ? 'bg-gray-900 text-white'
@@ -80,6 +88,15 @@ export default function NavbarModified({ onSettings }: NavbarProps) {
                           'rounded-md px-3 py-2 text-sm font-medium'
                         )}
                         aria-current={item.current ? 'page' : undefined}
+                        onClick={
+                          item.name === 'Create Post'
+                            ? onCreatePost
+                            : item.name === 'My Posts'
+                            ? onMyPosts
+                            : item.name === 'Home'
+                            ? onHome
+                            : undefined
+                        }
                       >
                         {item.name}
                       </a>
@@ -101,11 +118,36 @@ export default function NavbarModified({ onSettings }: NavbarProps) {
                   <div>
                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>
-                      <img
+                      {/* <img
                         className="h-8 w-8 rounded-full"
                         src={appContext.profilePicture}
-                        alt=""
-                      />
+                        // alt="https://res.cloudinary.com/dwvqftxep/image/upload/v1687425425/ProfilePics/user_fo89ku.png"
+                        alt="Alternative User Profile"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.src =
+                            'https://res.cloudinary.com/dwvqftxep/image/upload/v1687425425/ProfilePics/user_fo89ku.png'
+                          target.alt = 'Alternative User Profile'
+                        }} />*/}
+                      {appContext.profilePicture ? (
+                        <img
+                          className="h-8 w-8 rounded-full"
+                          src={appContext.profilePicture}
+                          alt="User Profile"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.src =
+                              'https://res.cloudinary.com/dwvqftxep/image/upload/v1687425425/ProfilePics/user_fo89ku.png'
+                            target.alt = 'Alternative User Profile'
+                          }}
+                        />
+                      ) : (
+                        <img
+                          className="h-8 w-8 rounded-full"
+                          src="https://res.cloudinary.com/dwvqftxep/image/upload/v1687425425/ProfilePics/user_fo89ku.png"
+                          alt="Alternative User Profile"
+                        />
+                      )}
                     </Menu.Button>
                   </div>
                   <Transition
@@ -186,12 +228,25 @@ export default function NavbarModified({ onSettings }: NavbarProps) {
                     'block rounded-md px-3 py-2 text-base font-medium'
                   )}
                   aria-current={item.current ? 'page' : undefined}
+                  onClick={
+                    item.name === 'Create Post'
+                      ? onCreatePost
+                      : item.name === 'My Posts'
+                      ? onMyPosts
+                      : item.name === 'Home'
+                      ? onHome
+                      : undefined
+                  }
                 >
                   {item.name}
                 </Disclosure.Button>
               ))}
             </div>
           </Disclosure.Panel>
+          <PostModal
+            isOpen={isPostModalOpen}
+            onClose={() => setPostModalOpen(false)}
+          />
         </>
       )}
     </Disclosure>
