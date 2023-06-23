@@ -1,5 +1,3 @@
-import ProfileModal from './ProfileModal'
-import { useState } from 'react'
 interface DropdownMenuProps {
   isOpen: boolean
   onSignOut: () => void
@@ -11,7 +9,7 @@ export default function NavBarDropDownMenu({
   isOpen,
   onSignOut,
   onSettingsClick,
-  onProfileClick
+  onProfileClick,
 }: DropdownMenuProps) {
   if (!isOpen) {
     return null

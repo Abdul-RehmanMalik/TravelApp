@@ -27,7 +27,7 @@ const VerificationPopUp = ({ isVerified }: PopupProps) => {
         if (token && id) {
           const response = await apiInstance.post('/auth/activate', {
             token,
-            id
+            id,
           })
           console.log(response)
           const { tokens } = response.data
@@ -49,7 +49,7 @@ const VerificationPopUp = ({ isVerified }: PopupProps) => {
   })
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-75">
       <div className="bg-white p-4 rounded shadow-lg">
         <h2 className="text-xl mb-2">Verification Status</h2>
         {isVerified ? (

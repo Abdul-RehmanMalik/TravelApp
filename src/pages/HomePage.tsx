@@ -1,63 +1,115 @@
 import { useContext, useState } from 'react'
-import Navbar from '../components/Navbar'
 import VerificationPopUp from '../components/VerificationPopup'
 import { AppContext } from '../context/appContext'
 import PostModal from '../components/PostModal'
 import ProfileModal from '../components/ProfileModal'
 import SettingsModal from '../components/SettingsModal'
+import Feed from '../components/PostsFeed'
+import NavbarModified from '../components/bar'
+import UpdatePasswordModal from '../components/UpdatePasswordModal'
+import UpdateUserInfoModal from '../components/UpdateUserinfo'
+
 export default function HomePage() {
   const appContext = useContext(AppContext)
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
-
+  const [myPostsUserId, setMyPostsUserId] = useState<number | null>(null)
+  const [isUpdatePasswordModalOpen, setIsUpdatePasswordModalOpen] =
+    useState(false)
+  const [isUpdateUserinfoModalOpen, setIsUpdateUserinfoModalOpen] =
+    useState(false)
   const handleProfileModal = () => {
     setIsProfileOpen(true)
   }
+
   const closeProfileModal = () => {
     setIsProfileOpen(false)
   }
+
   const handleCreatePost = () => {
     setIsPostModalOpen(true)
   }
+
   const handleSettings = () => {
     setIsSettingsOpen(true)
   }
-  // if (!appContext.loggedIn) {
-  //   return <Navigate to="/" />
-  // }
 
   const closeSettings = () => {
     setIsSettingsOpen(false)
   }
-  const accessToken = localStorage.getItem('accessToken')
-  //console.log(accessToken)
-  console.log(appContext.userId)
-  console.log('LoggedIn:', appContext.loggedIn)
-  //console.log(appContext.checkingSession)
-  console.log('isAct:', appContext.isActivated)
+  const handleOpenUpdatePasswordModal = () => {
+    setIsSettingsOpen(false)
+    setIsUpdatePasswordModalOpen(true)
+  }
 
-  console.log('user id:', appContext.userId)
+  const handleCloseUpdateUserinfoModal = () => {
+    setIsUpdateUserinfoModalOpen(false)
+  }
+  const handleOpenUpdateUserinfoModal = () => {
+    setIsSettingsOpen(false)
+    setIsUpdateUserinfoModalOpen(true)
+  }
+
+  const handleCloseUpdatePasswordModal = () => {
+    setIsUpdatePasswordModalOpen(false)
+  }
+  const handleMyPosts = () => {
+    if (appContext.loggedIn && appContext.userId) {
+      setMyPostsUserId(appContext.userId)
+    } else {
+      setMyPostsUserId(null)
+    }
+  }
+  const handleHome = () => {
+    setMyPostsUserId(null)
+  }
+  console.log('userId:', appContext.userId)
 
   return (
     <>
-      <Navbar
+      {/* <Navbar
         onCreatePost={handleCreatePost}
         onSettings={handleSettings}
         onProfile={handleProfileModal}
+        onMyPosts={handleMyPosts}
+        onHome={handleHome}
+      /> */}
+      <NavbarModified
+        onSettings={handleSettings}
+        onCreatePost={handleCreatePost}
+        onMyPosts={handleMyPosts}
+        onHome={handleHome}
       />
-      {appContext.isActivated ? null : (
-        <VerificationPopUp isOpen={true} isVerified={false} />
-      )}
+
       {isPostModalOpen && (
         <PostModal
           isOpen={isPostModalOpen}
           onClose={() => setIsPostModalOpen(false)}
         />
       )}
-      <ProfileModal isOpen={isProfileOpen} onClose={closeProfileModal} />
-      <SettingsModal isOpen={isSettingsOpen} onClose={closeSettings} />
-      {/*other components here*/}{' '}
+      {/* <ProfileModal isOpen={isProfileOpen} onClose={closeProfileModal} /> */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={closeSettings}
+        onUpdatePasswordClick={handleOpenUpdatePasswordModal}
+        onUpdateUserinfoClick={handleOpenUpdateUserinfoModal}
+      />
+      <UpdatePasswordModal
+        isOpen={isUpdatePasswordModalOpen}
+        onClose={handleCloseUpdatePasswordModal}
+      />
+      <UpdateUserInfoModal
+        isOpen={isUpdateUserinfoModalOpen}
+        onClose={handleCloseUpdateUserinfoModal}
+      />
+      {/* <div className="flex justify-center mt-6 sm:mt-12"> */}
+      <Feed userId={myPostsUserId} />
+      {/* </div> */}
+      {appContext.isActivated ? null : (
+        <VerificationPopUp isOpen={true} isVerified={false} />
+      )}
+      {/* other components here */}
     </>
   )
 }
