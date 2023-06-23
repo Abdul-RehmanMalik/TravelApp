@@ -118,17 +118,6 @@ export default function NavbarModified({
                   <div>
                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>
-                      {/* <img
-                        className="h-8 w-8 rounded-full"
-                        src={appContext.profilePicture}
-                        // alt="https://res.cloudinary.com/dwvqftxep/image/upload/v1687425425/ProfilePics/user_fo89ku.png"
-                        alt="Alternative User Profile"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          target.src =
-                            'https://res.cloudinary.com/dwvqftxep/image/upload/v1687425425/ProfilePics/user_fo89ku.png'
-                          target.alt = 'Alternative User Profile'
-                        }} />*/}
                       {appContext.profilePicture ? (
                         <img
                           className="h-8 w-8 rounded-full"

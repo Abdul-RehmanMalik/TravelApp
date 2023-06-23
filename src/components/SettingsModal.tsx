@@ -125,22 +125,6 @@ const SettingsModal = ({
               Update Info
             </button>
           </div>
-          {/* <div className="w-full mt-4"> */}
-          {/* <button
-              className="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-primary rounded-xl transition duration-500 ease-in-out transform hover:bg-hovercolor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              onClick={handleUpdateEmailClick}
-            >
-              Update Email
-            </button>
-          </div>
-          <div className="w-full mt-4">
-            <button
-              className="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-primary rounded-xl transition duration-500 ease-in-out transform hover:bg-hovercolor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              onClick={handleUpdateAddressClick}
-            >
-              Update Address
-            </button> */}
-          {/* </div> */}
         </div>
         <div className="flex justify-end mt-4">
           {isDirty && (
