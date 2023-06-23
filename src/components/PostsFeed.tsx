@@ -49,7 +49,6 @@ const Feed = ({ userId }: FeedProps) => {
   const [isLikesModalVisible, setIsLikesModalVisible] = useState(false) // Updated variable
   const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({})
   const pageRef = useRef<number>(1)
-  // const limitRef = useRef<number>(2)
   const containerRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
@@ -86,7 +85,6 @@ const Feed = ({ userId }: FeedProps) => {
       const response = await apiInstance.get('/posts/getall', {
         params: {
           page: 1,
-          // limit: limitRef.current,
         },
       })
       setPosts(response.data.data)
@@ -104,7 +102,6 @@ const Feed = ({ userId }: FeedProps) => {
         {
           params: {
             page: 1,
-            // limit: limitRef.current,
           },
         }
       )
@@ -125,7 +122,6 @@ const Feed = ({ userId }: FeedProps) => {
       const response = await apiInstance.get('/posts/getall', {
         params: {
           page: pageRef.current + 1,
-          // limit: limitRef.current,
         },
       })
 
@@ -139,23 +135,7 @@ const Feed = ({ userId }: FeedProps) => {
       console.log(error)
     }
   }
-  // const calculateImageSize = (numImages: number): string => {
-  //   const totalSize = 400 // total size for the images (width + height)
-  //   const imageSize = Math.floor(totalSize / numImages) // Calculate the size for each image
-  //   return `${imageSize}px`
-  // }
-  // const calculateImageSize = (numImages: number): string => {
-  //   let totalSize = 400 // total size for the images (width + height)
-  //   if (window.innerWidth <= 640) {
-  //     // for small screens
-  //     totalSize = 200
-  //   } else if (window.innerWidth <= 768) {
-  //     // for medium screens
-  //     totalSize = 250
-  //   }
-  //   const imageSize = Math.floor(totalSize / numImages) // Calculate the size for each image
-  //   return `${imageSize}px`
-  // }
+
   const calculateImageSize = (numImages: number): string => {
     const containerWidth = containerRef.current?.clientWidth || 0
     const maxImageSize = Math.floor(containerWidth / numImages) / 2
@@ -303,10 +283,6 @@ const Feed = ({ userId }: FeedProps) => {
     setisDetailsModalVisible(true)
   }
 
-  // const closeDetailsModal = () => {
-  //   setisDetailsModalVisible(false)
-  //   setSelectedPostId(undefined)
-  // }
   return (
     <div className="flex justify-center mt-6 sm:mt-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">

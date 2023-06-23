@@ -27,6 +27,7 @@ export default function CommentsModal({
   const [selectedUser, setSelectedUser] = useState<
     Comment['commentedBy'] | null
   >(null)
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
 
   useEffect(() => {
     fetchComments()
@@ -96,8 +97,6 @@ export default function CommentsModal({
       </div>
     ))
   }
-
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
 
   const handleCommentSubmit = async () => {
     try {
