@@ -4,16 +4,30 @@ import { useNavigate } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import NavBarDropDownMenu from './NavbarDropDownMenu'
 import CreatePostButton from './CreatePostButton'
+
 interface NavbarProps {
   onCreatePost: () => void
+  onSettings: () => void
+  onProfile: () => void
+  onMyPosts: () => void
+  onHome: () => void
 }
-export default function Navbar({ onCreatePost }: NavbarProps) {
+
+export default function Navbar({
+  onCreatePost,
+  onSettings,
+  onProfile,
+  onMyPosts,
+  onHome,
+}: NavbarProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const appContext = useContext(AppContext)
   const navigate = useNavigate()
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
+
   const handleSignOut = async () => {
     try {
       if (appContext.logout) {
@@ -26,12 +40,13 @@ export default function Navbar({ onCreatePost }: NavbarProps) {
 
     setIsDropdownOpen(false)
   }
+
   return (
     <nav className="bg-white shadow-lg w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">
-            <a href="#" className="flex items-center">
+            <a href="#" className="flex items-center" onClick={onHome}>
               <svg
                 className="h-6 w-6 mr-2 text-gray-600"
                 fill="none"
@@ -45,7 +60,9 @@ export default function Navbar({ onCreatePost }: NavbarProps) {
                   d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                 />
               </svg>
-              <span className="text-lg font-medium text-gray-900">Home</span>
+              <span className="px-4 py-2 bg-primary text-white active:bg-white hover:bg-white hover:text-primary rounded-md font-semibold shadow">
+                Home
+              </span>
             </a>
             <div className="ml-8">
               <div className="flex space-x-4">
@@ -55,6 +72,16 @@ export default function Navbar({ onCreatePost }: NavbarProps) {
             </div>
           </div>
           <div className="flex items-center">
+            <div className="mr-4">
+              {/* "My Posts" Button */}
+              <button
+                type="button"
+                onClick={onMyPosts}
+                className="px-4 py-2 bg-primary text-white active:bg-white hover:bg-white hover:text-primary rounded-md font-semibold shadow"
+              >
+                My Posts
+              </button>
+            </div>
             <div className="mr-4">
               <CreatePostButton onCreatePost={onCreatePost} />
             </div>
@@ -68,12 +95,18 @@ export default function Navbar({ onCreatePost }: NavbarProps) {
                 aria-expanded="false"
                 aria-haspopup="true"
               >
-                <img className="h-8 w-8 rounded-full" src="" alt="Profile" />
+                <img
+                  className="h-8 w-8 rounded-full"
+                  src={appContext.profilePicture}
+                  alt="Profile"
+                />
               </button>
               {/* Dropdown Menu */}
               <NavBarDropDownMenu
                 isOpen={isDropdownOpen}
                 onSignOut={handleSignOut}
+                onSettingsClick={onSettings}
+                onProfileClick={onProfile}
               />
             </div>
           </div>

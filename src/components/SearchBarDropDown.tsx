@@ -10,7 +10,7 @@ interface User {
 }
 
 export default function SearchBarDropdownMenu({
-  data
+  data,
 }: SearchBarDropdownMenuProps) {
   return (
     <div className="absolute mt-1 bg-white border border-primary rounded-md shadow-lg w-100">
