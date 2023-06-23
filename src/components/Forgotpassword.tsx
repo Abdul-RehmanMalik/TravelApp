@@ -5,12 +5,15 @@ import FormAction from './FormAction'
 import apiInstance from '../axios'
 import FailureSnackbar from './FailureResponseSnackbar'
 import SuccessSnackbar from './SuccessResponseSnackbar'
+import { useNavigate } from 'react-router-dom'
+
 const fields = forgotPasswordFields
 let fieldsState: { [key: string]: string } = {}
 fields.forEach((field) => (fieldsState[field.id] = ''))
 
 const Forgotpassword = () => {
   const [passwordState, setPasswordState] = useState(fieldsState)
+  const navigate = useNavigate()
 
   const handleChange = (e: { target: { id: any; value: any } }) => {
     setPasswordState({ ...passwordState, [e.target.id]: e.target.value })
@@ -46,7 +49,12 @@ const Forgotpassword = () => {
       setShowSnackbar(true)
     }
   }
-
+  const handleSnackbarClose = () => {
+    setShowSnackbar(false)
+    if (isSuccess) {
+      navigate('/resendpasswordresetmail')
+    }
+  }
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       <div className="-space-y-px">
@@ -67,10 +75,7 @@ const Forgotpassword = () => {
         ))}
       </div>
       {showSnackbar && isSuccess && (
-        <SuccessSnackbar
-          message={response}
-          onClose={() => setShowSnackbar(false)}
-        />
+        <SuccessSnackbar message={response} onClose={handleSnackbarClose} />
       )}
       {showSnackbar && !isSuccess && (
         <FailureSnackbar

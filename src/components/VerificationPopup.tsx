@@ -23,14 +23,22 @@ const VerificationPopUp = ({ isVerified }: PopupProps) => {
   useEffect(() => {
     const authenticateUser = async () => {
       try {
+        const accessToken = localStorage.getItem('accessToken')
         if (token && id) {
           const response = await apiInstance.post('/auth/activate', {
             token,
-            id
+            id,
           })
           console.log(response)
-          appContext.setIsActivated?.(true)
-          //navigate('/home')
+          const { tokens } = response.data
+          const { isActivated } = response.data
+          localStorage.setItem('accessToken', tokens.accessToken)
+          apiInstance.defaults.headers.common[
+            'Authorization'
+          ] = `Bearer ${accessToken}`
+          appContext.setIsActivated?.(isActivated)
+          appContext.setLoggedIn?.(true)
+          navigate('/home')
         }
       } catch (error) {
         console.log(error)
@@ -38,18 +46,10 @@ const VerificationPopUp = ({ isVerified }: PopupProps) => {
     }
 
     authenticateUser()
-  }, [token, id])
+  })
 
-  // const authenticateUser = async () => {
-  //   try {
-  //     const response = await apiInstance.post('/auth/activate', { token, id })
-  //     console.log(response)
-  //   } catch (error: any) {
-  //     console.log(error)
-  //   }
-  // }
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-75">
       <div className="bg-white p-4 rounded shadow-lg">
         <h2 className="text-xl mb-2">Verification Status</h2>
         {isVerified ? (

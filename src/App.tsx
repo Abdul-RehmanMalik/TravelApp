@@ -13,10 +13,10 @@ import ResetPasswordPage from './pages/ResetPassword'
 import HomePage from './pages/HomePage'
 import { useContext } from 'react'
 import { AppContext } from './context/appContext'
+import ResendPasswordResetPage from './pages/ResendPasswordResetMail'
 
 function App() {
   const appContext = useContext(AppContext)
-
   if (!appContext.loggedIn) {
     return (
       <div className="">
@@ -27,21 +27,23 @@ function App() {
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
               <Route path="/resetpassword" element={<ResetPasswordPage />} />
-              {/* <Route path="*" element={<Navigate to="/" />} /> */}
+              <Route
+                path="/resendpasswordresetmail"
+                element={<ResendPasswordResetPage />}
+              />
             </Routes>
           </BrowserRouter>
         </div>
       </div>
     )
   }
-
   return (
     <div className="">
       <div className="">
         <BrowserRouter>
           <Routes>
             <Route path="/home" element={<HomePage />} />
-            {/* <Route path="*" element={<Navigate to="/home" />} /> */}
+            {/* <Route path="/home" element={<Navigate to="/" />} /> */}
           </Routes>
         </BrowserRouter>
       </div>

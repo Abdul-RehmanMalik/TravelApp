@@ -5,7 +5,7 @@ import {
   useState,
   useEffect,
   useCallback,
-  ReactNode
+  ReactNode,
 } from 'react'
 import apiInstance from '../axios'
 
@@ -19,6 +19,8 @@ interface AppContextProps {
   setUserId: Dispatch<SetStateAction<number>> | null
   username: string
   setUsername: Dispatch<SetStateAction<string>> | null
+  profilePicture: string
+  setProfilePicture: Dispatch<SetStateAction<string>> | null
   logout: (() => void) | null
 }
 export const AppContext = createContext<AppContextProps>({
@@ -30,8 +32,10 @@ export const AppContext = createContext<AppContextProps>({
   userId: 0,
   setUserId: null,
   username: '',
+  profilePicture: '',
+  setProfilePicture: null,
   setUsername: null,
-  logout: null
+  logout: null,
 })
 const AppContextProvider = (props: { children: ReactNode }) => {
   const { children } = props
@@ -39,7 +43,9 @@ const AppContextProvider = (props: { children: ReactNode }) => {
   const [loggedIn, setLoggedIn] = useState(false)
   const [isActivated, setIsActivated] = useState(false)
   const [userId, setUserId] = useState(0)
+  const [profilePicture, setProfilePicture] = useState('')
   const [username, setUsername] = useState('')
+
   const accessToken = localStorage.getItem('accessToken')
   useEffect(() => {
     setCheckingSession(true)
@@ -51,6 +57,7 @@ const AppContextProvider = (props: { children: ReactNode }) => {
         'Authorization'
       ] = `Bearer ${accessToken}`
     }
+
     apiInstance
       .get('/session')
       .then((res) => res.data)
@@ -60,6 +67,7 @@ const AppContextProvider = (props: { children: ReactNode }) => {
         setUsername(data?.name)
         setLoggedIn(true)
         setIsActivated(data?.isActivated)
+        setProfilePicture(data?.profilePicture)
       })
       .catch(() => {
         console.log('in context catch')
@@ -68,13 +76,15 @@ const AppContextProvider = (props: { children: ReactNode }) => {
       })
   }, [])
   const logout = useCallback(() => {
-    apiInstance.get('/auth/logout').then(() => {
+    apiInstance.post('/auth/logout').then(() => {
       console.log('callback called')
       setLoggedIn(false)
       setUsername('')
       setUserId(0)
       localStorage.removeItem('accessToken')
       delete apiInstance.defaults.headers.common['Authorization']
+      console.log('userId', userId)
+      console.log('LoggedIn', loggedIn)
     })
   }, [])
 
@@ -89,8 +99,10 @@ const AppContextProvider = (props: { children: ReactNode }) => {
         userId,
         setUserId,
         username,
+        profilePicture,
+        setProfilePicture,
         setUsername,
-        logout
+        logout,
       }}
     >
       {children}
