@@ -1,12 +1,12 @@
-import { useState, FormEvent, useContext } from 'react'
+import { FormEvent, useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import apiInstance from '../axios'
 import { signupFields } from '../constants/formFields'
+import { AppContext } from '../context/appContext'
+import FailureSnackbar from './FailureResponseSnackbar'
 import FormAction from './FormAction'
 import Input from './Input'
-import apiInstance from '../axios'
 import SuccessSnackbar from './SuccessResponseSnackbar'
-import FailureSnackbar from './FailureResponseSnackbar'
-import { Navigate, useNavigate } from 'react-router-dom'
-import { AppContext } from '../context/appContext'
 const fields = signupFields
 let fieldsState: { [key: string]: string } = {}
 fields.forEach((field) => (fieldsState[field.id] = ''))
@@ -31,7 +31,7 @@ const Signup = () => {
     name: signupState.username,
     email: signupState.email,
     password: signupState.password,
-    address: signupState.address
+    address: signupState.address,
   })
   console.log('SignUpReqData:', getSignUpReqData())
   const createAccount = async () => {
