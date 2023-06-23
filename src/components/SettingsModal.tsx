@@ -2,15 +2,24 @@ import React, { useState } from 'react'
 import apiInstance from '../axios'
 import { useContext } from 'react'
 import { AppContext } from '../context/appContext'
+
 interface SettingsModalProps {
   isOpen: boolean
   onClose: () => void
+  onUpdatePasswordClick: () => void
+  onUpdateUserinfoClick: () => void
 }
 
-const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
+const SettingsModal = ({
+  isOpen,
+  onUpdatePasswordClick,
+  onUpdateUserinfoClick,
+  onClose,
+}: SettingsModalProps) => {
   if (!isOpen) {
     return null
   }
+
   const [response, setResponse] = useState('')
   const appContext = useContext(AppContext)
 
@@ -34,11 +43,11 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const handleUpdateAddressClick = () => {
     setIsDirty(true)
   }
+
   const handleSaveClick = async () => {
     try {
       if (selectedProfilePicture) {
         const formData = new FormData()
-        console.log(selectedProfilePicture)
         formData.append('profilePicture', selectedProfilePicture)
         formData.append('id', String(appContext.userId))
         const response = await apiInstance.put(
@@ -70,7 +79,7 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
-      <div className="relative bg-white p-8 rounded-lg">
+      <div className="relative bg-white p-4 rounded-lg w-66 h-66 sm:max-w-sm md:max-w-md lg:max-w-lg">
         <h2 className="text-2xl font-bold mb-4">Settings</h2>
         <div className="flex flex-col items-center pt-6 pr-6 pb-6 pl-6">
           <img
@@ -83,12 +92,12 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             alt="Profile"
           />
           <p className="mt-12 text-lg font-semibold leading-none text-black tracking-tighter lg:text-3xl">
-            Abdul Rehman
+            {appContext.username}
           </p>
           <div className="w-full mt-6">
             <button
               className="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-primary rounded-xl transition duration-500 ease-in-out transform hover:bg-hovercolor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              onClick={handleUpdatePasswordClick}
+              onClick={onUpdatePasswordClick}
             >
               Update Password
             </button>
@@ -111,39 +120,23 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
           <div className="w-full mt-4">
             <button
               className="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-primary rounded-xl transition duration-500 ease-in-out transform hover:bg-hovercolor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              onClick={handleUpdateNameClick}
+              onClick={onUpdateUserinfoClick}
             >
-              Update Name
-            </button>
-          </div>
-          <div className="w-full mt-4">
-            <button
-              className="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-primary rounded-xl transition duration-500 ease-in-out transform hover:bg-hovercolor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              onClick={handleUpdateEmailClick}
-            >
-              Update Email
-            </button>
-          </div>
-          <div className="w-full mt-4">
-            <button
-              className="flex text-center items-center justify-center w-full pt-4 pr-10 pb-4 pl-10 text-base font-medium text-white bg-primary rounded-xl transition duration-500 ease-in-out transform hover:bg-hovercolor focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              onClick={handleUpdateAddressClick}
-            >
-              Update Address
+              Update Info
             </button>
           </div>
         </div>
         <div className="flex justify-end mt-4">
           {isDirty && (
             <button
-              className="bg-primary hover:bg-hovercolor text-white font-bold py-2 px-4 rounded mr-2"
+              className="bg-primary hover:bg-hovercolor text-white font-bold py-2 px-4 rounded m-2"
               onClick={handleSaveClick}
             >
               Save
             </button>
           )}
           <button
-            className="bg-primary hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+            className="bg-primary hover:bg-red-600 text-white font-bold py-2 px-4 rounded m-2"
             onClick={onClose}
           >
             Close

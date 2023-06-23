@@ -6,6 +6,8 @@ import ProfileModal from '../components/ProfileModal'
 import SettingsModal from '../components/SettingsModal'
 import Feed from '../components/PostsFeed'
 import NavbarModified from '../components/bar'
+import UpdatePasswordModal from '../components/UpdatePasswordModal'
+import UpdateUserInfoModal from '../components/UpdateUserinfo'
 
 export default function HomePage() {
   const appContext = useContext(AppContext)
@@ -13,7 +15,10 @@ export default function HomePage() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [myPostsUserId, setMyPostsUserId] = useState<number | null>(null)
-
+  const [isUpdatePasswordModalOpen, setIsUpdatePasswordModalOpen] =
+    useState(false)
+  const [isUpdateUserinfoModalOpen, setIsUpdateUserinfoModalOpen] =
+    useState(false)
   const handleProfileModal = () => {
     setIsProfileOpen(true)
   }
@@ -33,7 +38,22 @@ export default function HomePage() {
   const closeSettings = () => {
     setIsSettingsOpen(false)
   }
+  const handleOpenUpdatePasswordModal = () => {
+    setIsSettingsOpen(false)
+    setIsUpdatePasswordModalOpen(true)
+  }
 
+  const handleCloseUpdateUserinfoModal = () => {
+    setIsUpdateUserinfoModalOpen(false)
+  }
+  const handleOpenUpdateUserinfoModal = () => {
+    setIsSettingsOpen(false)
+    setIsUpdateUserinfoModalOpen(true)
+  }
+
+  const handleCloseUpdatePasswordModal = () => {
+    setIsUpdatePasswordModalOpen(false)
+  }
   const handleMyPosts = () => {
     if (appContext.loggedIn && appContext.userId) {
       setMyPostsUserId(appContext.userId)
@@ -55,7 +75,12 @@ export default function HomePage() {
         onMyPosts={handleMyPosts}
         onHome={handleHome}
       /> */}
-      <NavbarModified onSettings={handleSettings} />
+      <NavbarModified
+        onSettings={handleSettings}
+        onCreatePost={handleCreatePost}
+        onMyPosts={handleMyPosts}
+        onHome={handleHome}
+      />
 
       {isPostModalOpen && (
         <PostModal
@@ -64,7 +89,20 @@ export default function HomePage() {
         />
       )}
       {/* <ProfileModal isOpen={isProfileOpen} onClose={closeProfileModal} /> */}
-      <SettingsModal isOpen={isSettingsOpen} onClose={closeSettings} />
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={closeSettings}
+        onUpdatePasswordClick={handleOpenUpdatePasswordModal}
+        onUpdateUserinfoClick={handleOpenUpdateUserinfoModal}
+      />
+      <UpdatePasswordModal
+        isOpen={isUpdatePasswordModalOpen}
+        onClose={handleCloseUpdatePasswordModal}
+      />
+      <UpdateUserInfoModal
+        isOpen={isUpdateUserinfoModalOpen}
+        onClose={handleCloseUpdateUserinfoModal}
+      />
       {/* <div className="flex justify-center mt-6 sm:mt-12"> */}
       <Feed userId={myPostsUserId} />
       {/* </div> */}
